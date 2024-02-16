@@ -27,7 +27,7 @@ func New(storagePath string) (*Storage, error) {
 			email TEXT NOT NULL UNIQUE,
 			hashed_password TEXT NOT NULL,
 			created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-			status TEXT NOT NULL
+			status INTEGER DEFAULT 0
 		);`,
 		`CREATE TABLE IF NOT EXISTS Post (
 			post_id INTEGER PRIMARY KEY,
@@ -85,4 +85,5 @@ func New(storagePath string) (*Storage, error) {
 
 	return &Storage{db: db}, nil
 }
+
 
