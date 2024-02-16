@@ -16,11 +16,12 @@ func main() {
 
 	// init db
 	storage, err := sqlite.New(cfg.StoragePath)
-
 	if err != nil {
 		log.Fatal(err)
 	}
 	_ = storage
+
+	// zheka lox
 
 	// init router
 
