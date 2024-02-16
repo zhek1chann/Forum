@@ -1,5 +1,0 @@
-{
-    "address": ":8080",
-    "db_path": "./data/storage.db",
-    "env": "dev"
-}
