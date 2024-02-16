@@ -26,7 +26,7 @@ func New(storagePath string) (*Storage, error) {
 			name TEXT NOT NULL,
 			email TEXT NOT NULL UNIQUE,
 			hashed_password TEXT NOT NULL,
-			created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			status INTEGER DEFAULT 0
 		);`,
 		`CREATE TABLE IF NOT EXISTS Post (
@@ -34,6 +34,7 @@ func New(storagePath string) (*Storage, error) {
 			user_id INTEGER,
 			title TEXT NOT NULL,
 			content TEXT NOT NULL,
+			created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			like INTEGER DEFAULT 0,
 			dislike INTEGER DEFAULT 0,
 			image_name TEXT,
@@ -62,6 +63,7 @@ func New(storagePath string) (*Storage, error) {
 			comment_id INTEGER PRIMARY KEY,
 			post_id INTEGER,
 			user_id INTEGER,
+			created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			content TEXT NOT NULL,
 			like INTEGER DEFAULT 0,
 			dislike INTEGER DEFAULT 0,
@@ -80,10 +82,8 @@ func New(storagePath string) (*Storage, error) {
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
 		}
-		stmt.Close() // Don't forget to close the statement
+		stmt.Close()
 	}
 
 	return &Storage{db: db}, nil
 }
-
-
