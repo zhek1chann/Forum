@@ -3,19 +3,20 @@ package models
 import "time"
 
 type Post struct {
-	PostID        int64
-	CreatedUserID int64
-	Title         string
-	Content       string
-	CreatedTime   time.Time
-	LikeCounter    string
-	DislikeCounter string
+	PostID    int
+	UserID    int
+	Title     string
+	Content   string
+	ImageName string
+	Created   time.Time
+	Like      int
+	Dislike   int
 }
 
 type Comment struct {
-	CommentId      int64
-	PostID         int64
-	CreatedUserID  int64
+	CommentId      int
+	PostID         int
+	CreatedUserID  int
 	Content        string
 	CreatedTime    time.Time
 	LikeCounter    string

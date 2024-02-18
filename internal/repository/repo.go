@@ -17,6 +17,10 @@ type PostRepo interface {
 	AddLikeAndDislike(bool, string, string) error
 }
 
+type CategoryRepo interface{
+	
+}
+
 type CommentRepo interface {
 	CreateComment(*models.Comment) error
 	GetAllCommentByPostID(string) (*[]models.Post, error)
