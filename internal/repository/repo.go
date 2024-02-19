@@ -14,14 +14,16 @@ type PostRepo interface {
 	GetAllPost() (*models.Post, error)
 	// UpdatePost(string, *models.Post) error
 	AddLikeAndDislike(bool, string, string) error
-	DeleteLikeAndDislike(int,int) error
-	GetAllPostByUserID(int) (*[]models.Post, error)
-	GetAllPostByCategories([]int) ([]models.Post, error)
+	DeleteLikeAndDislike(int, int) error
+	GetAllPostByUserID(int) ([]*models.Post, error)
+	GetAllPostByCategories([]int) ([]*models.Post, error)
+
+	GetAllPostPaginated(int, int) ([]*models.Post, error)
 }
 
 type CategoryRepo interface {
 	AddCategoryToPost(int, []int) error
-	GetALLCategory() (map[int]string, int)
+	GetALLCategory() (map[int]string, error)
 	CreateCategory(string) error
 }
 

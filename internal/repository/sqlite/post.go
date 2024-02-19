@@ -96,7 +96,7 @@ func (s *Storage) DeleteLikeAndDislike(userID, postID int) error {
 		return err
 	}
 
-	// decrement the like or dislike 
+	// decrement the like or dislike
 	updateQuery := ""
 	if isLike {
 		updateQuery = `UPDATE Post SET like = like - 1 WHERE post_id = ? AND like > 0`
@@ -134,7 +134,7 @@ func (s *Storage) GetAllPostByUserID(userID int) (*[]models.Post, error) {
 	return &posts, nil
 }
 
-func (s *Storage) GetAllPostByCategories(categoryIDs []int) ([]models.Post, error) {
+func (s *Storage) GetAllPostByCategories(categoryIDs []int) ([]*models.Post, error) {
 	query := `SELECT p.post_id, p.user_id, p.title, p.content, p.created, p.like, p.dislike, p.image_name
               FROM Post AS p
               INNER JOIN Post_Category AS pc ON p.post_id = pc.post_id
@@ -153,6 +153,28 @@ func (s *Storage) GetAllPostByCategories(categoryIDs []int) ([]models.Post, erro
 	}
 	defer rows.Close()
 
+	var posts []*models.Post
+	for rows.Next() {
+		var post models.Post
+		if err := rows.Scan(&post.PostID, &post.UserID, &post.Title, &post.Content, &post.Created, &post.Like, &post.Dislike, &post.ImageName); err != nil {
+			return nil, err
+		}
+		posts = append(posts, &post)
+	}
+
+	return posts, nil
+}
+
+func (s *Storage) GetAllPostPaginated(page int, pageSize int) (*[]models.Post, error) {
+	offset := (page - 1) * pageSize
+	query := `SELECT post_id, user_id, title, content, created, like, dislike, image_name FROM Post LIMIT ? OFFSET ?`
+
+	rows, err := s.db.Query(query, pageSize, offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
 	var posts []models.Post
 	for rows.Next() {
 		var post models.Post
@@ -161,6 +183,5 @@ func (s *Storage) GetAllPostByCategories(categoryIDs []int) ([]models.Post, erro
 		}
 		posts = append(posts, post)
 	}
-
-	return posts, nil
+	return &posts, nil
 }
