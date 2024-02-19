@@ -3,9 +3,10 @@ package models
 import "time"
 
 type User struct {
-	UserID         int64
+	ID             int64
+	Name           string
 	Email          string
-	HashedPassword string
-	CreatedTime    time.Time
+	HashedPassword []byte
+	Created        time.Time
 	Status         int
 }
