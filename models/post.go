@@ -11,6 +11,8 @@ type Post struct {
 	Created   time.Time
 	Like      int
 	Dislike   int
+	Comment   *[]Comment
+	Category  map[int]string
 }
 
 type Comment struct {
