@@ -3,8 +3,6 @@ package sqlite
 import (
 	"database/sql"
 	"fmt"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 type Storage struct {
