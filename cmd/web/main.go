@@ -3,7 +3,7 @@ package main
 import (
 	"forum/internal/config"
 	"forum/internal/handlers"
-	"forum/internal/repository/sqlite"
+	repo "forum/internal/repository"
 	"log"
 	"net/http"
 	"os"
@@ -29,11 +29,12 @@ func main() {
 	cfg := config.MustLoad()
 
 	// init db
-	storage, err := sqlite.New(cfg.StoragePath)
+	storage, err := repo.New(cfg.StoragePath)
 	if err != nil {
 		log.Fatal(err)
 	}
 	_ = storage
+
 	srv := &http.Server{
 		Addr:         cfg.Address,
 		ErrorLog:     errLog,
@@ -43,7 +44,7 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 
-	infoLog.Printf("Starting server on https://localhost%s", cfg.Address)
+	infoLog.Printf("Starting server on http://localhost%s", cfg.Address)
 	srv.ListenAndServe()
 
 }

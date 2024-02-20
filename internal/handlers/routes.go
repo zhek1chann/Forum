@@ -7,11 +7,11 @@ func Routes() http.Handler {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", home)
-	mux.HandleFunc("/user", user)
-	mux.HandleFunc("/post", post)
+	mux.HandleFunc("/post/", postView)
+	mux.HandleFunc("/post/create", postCreate)
 	mux.HandleFunc("/login", login)
 	mux.HandleFunc("/signup", signup)
-	mux.HandleFunc("/logout", logout)
+	mux.HandleFunc("/logout", logoutPost)
 
 	return mux
 }

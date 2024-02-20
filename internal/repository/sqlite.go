@@ -1,15 +1,11 @@
-package sqlite
+package repo
 
 import (
 	"database/sql"
 	"fmt"
 )
 
-type Storage struct {
-	db *sql.DB
-}
-
-func New(storagePath string) (*Storage, error) {
+func NewDB(storagePath string) (*sql.DB, error) {
 	const op = "storage.sqlite.New"
 
 	db, err := sql.Open("sqlite3", storagePath)
@@ -83,5 +79,5 @@ func New(storagePath string) (*Storage, error) {
 		stmt.Close()
 	}
 
-	return &Storage{db: db}, nil
+	return db, nil
 }

@@ -1,18 +1,18 @@
-package sqlite
+package repo
 
 import (
 	"forum/models"
 	"strings"
 )
 
-func (s *Storage) CreatePost(post *models.Post) error {
+func (s *repo) CreatePost(post *models.Post) error {
 	const query = `INSERT INTO Post (user_id, title, content, image_name) VALUES (?, ?, ?, ?)`
 	_, err := s.db.Exec(query, post.UserID, post.Title, post.Content, post.ImageName)
 
 	return err
 }
 
-func (s *Storage) GetAllPost() ([]models.Post, error) {
+func (s *repo) GetAllPost() ([]models.Post, error) {
 	const query = `SELECT post_id, user_id, title, content, created, like, dislike, image_name FROM Post`
 	rows, err := s.db.Query(query)
 	if err != nil {
@@ -32,7 +32,7 @@ func (s *Storage) GetAllPost() ([]models.Post, error) {
 	return posts, nil
 }
 
-func (s *Storage) AddLikeAndDislike(isLike bool, userID, postID string) error {
+func (s *repo) AddLikeAndDislike(isLike bool, userID, postID string) error {
 	tx, err := s.db.Begin()
 	if err != nil {
 		return err
@@ -73,7 +73,7 @@ func (s *Storage) AddLikeAndDislike(isLike bool, userID, postID string) error {
 	return tx.Commit()
 }
 
-func (s *Storage) DeleteLikeAndDislike(userID, postID int) error {
+func (s *repo) DeleteLikeAndDislike(userID, postID int) error {
 	tx, err := s.db.Begin()
 	if err != nil {
 		return err
@@ -112,7 +112,7 @@ func (s *Storage) DeleteLikeAndDislike(userID, postID int) error {
 	return tx.Commit()
 }
 
-func (s *Storage) GetAllPostByUserID(userID int) (*[]models.Post, error) {
+func (s *repo) GetAllPostByUserID(userID int) (*[]models.Post, error) {
 	const query = `SELECT post_id, user_id, title, content, created, like, dislike, image_name FROM Post WHERE user_id=?`
 	rows, err := s.db.Query(query, userID)
 	if err != nil {
@@ -134,7 +134,7 @@ func (s *Storage) GetAllPostByUserID(userID int) (*[]models.Post, error) {
 	return &posts, nil
 }
 
-func (s *Storage) GetAllPostByCategories(categoryIDs []int) ([]*models.Post, error) {
+func (s *repo) GetAllPostByCategories(categoryIDs []int) ([]*models.Post, error) {
 	query := `SELECT p.post_id, p.user_id, p.title, p.content, p.created, p.like, p.dislike, p.image_name
               FROM Post AS p
               INNER JOIN Post_Category AS pc ON p.post_id = pc.post_id
@@ -165,7 +165,7 @@ func (s *Storage) GetAllPostByCategories(categoryIDs []int) ([]*models.Post, err
 	return posts, nil
 }
 
-func (s *Storage) GetAllPostPaginated(page int, pageSize int) (*[]models.Post, error) {
+func (s *repo) GetAllPostPaginated(page int, pageSize int) (*[]models.Post, error) {
 	offset := (page - 1) * pageSize
 	query := `SELECT post_id, user_id, title, content, created, like, dislike, image_name FROM Post LIMIT ? OFFSET ?`
 

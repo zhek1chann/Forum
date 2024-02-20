@@ -1,4 +1,4 @@
-package sqlite
+package repo
 
 func AddCategoryToPost(int, []int) error {
 	return nil

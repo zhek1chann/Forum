@@ -1,4 +1,4 @@
-package sqlite
+package repo
 
 import (
 	"database/sql"
@@ -8,7 +8,23 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (s *Storage) CreateUser(u models.User) error {
+func (s *repo) GetUserByEmail(email string) (*models.User, error) {
+	var u models.User
+	stmt := `SELECT id, name, email, created FROM users WHERE id=?`
+	err := s.db.QueryRow(stmt, email).Scan(&u.ID, &u.Name, &u.Email, &u.Created)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, models.ErrNoRecord
+		}
+		return nil, err
+	}
+	return &u, nil
+
+}
+
+func (s *repo) UpdateUserByID(string) (*models.User, error) { return nil, nil }
+
+func (s *repo) CreateUser(u *models.User) error {
 	hashed_password, err := bcrypt.GenerateFromPassword(u.HashedPassword, 12)
 	if err != nil {
 		return err
@@ -21,11 +37,7 @@ func (s *Storage) CreateUser(u models.User) error {
 	return nil
 }
 
-func (s *Storage) DeleteUser(id int) error {
-	return nil
-}
-
-func (s *Storage) GetUser(id int) (*models.User, error) {
+func (s *repo) GetUserByID(id int) (*models.User, error) {
 	var u models.User
 	stmt := `SELECT id, name, email, created FROM users WHERE id=?`
 	err := s.db.QueryRow(stmt, id).Scan(&u.ID, &u.Name, &u.Email, &u.Created)
@@ -38,7 +50,7 @@ func (s *Storage) GetUser(id int) (*models.User, error) {
 	return &u, nil
 }
 
-func (s *Storage) Authenticate(email, password string) (int, error) {
+func (s *repo) Authenticate(email, password string) (int, error) {
 	var id int
 	var hashed_password []byte
 	stmt := `SELECT id, hashed_password FROM users WHERE email=?`
