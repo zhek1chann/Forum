@@ -1,32 +1,26 @@
 package config
 
 import (
-	"log"
-	"os"
+	"flag"
 )
 
 type Config struct {
-	Env         string `json:"env"`
-	StoragePath string `json:"db_path"`
-	Address     string `json:"address"`
+	Env         string
+	StoragePath string
+	Address     string
 }
 
 func MustLoad() *Config {
-	var cfg Config
-	cfg.Address = os.Getenv("addr")
-	cfg.Env = os.Getenv("env")
-	cfg.StoragePath = os.Getenv("storage_path")
+	addr := flag.String("addr", ":8080", "USAGE: :PORT, EX: \":8080\"")
+	env := flag.String("env", "dev", "USAGE: DEV, EX: DEV|STAGE|PROD")
+	dsn := flag.String("dsn", "./data/storage.db", "USAGE: STORAGE PATH, EX: ./data/storage.db")
 
-	if cfg.Address == "" {
-		log.Fatal("Addres is not set")
-	}
+	flag.Parse()
 
-	if cfg.Env == "" {
-		log.Fatal("Envirment is not set")
-	}
-
-	if cfg.StoragePath == "" {
-		log.Fatal("storage path is not set")
+	cfg := Config{
+		Env:         *env,
+		Address:     *addr,
+		StoragePath: *dsn,
 	}
 
 	return &cfg

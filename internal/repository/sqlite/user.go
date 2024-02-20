@@ -4,9 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"forum/models"
-	"strings"
 
-	_ "github.com/go-sql-driver/sqlite"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -18,12 +16,6 @@ func (s *Storage) CreateUser(u models.User) error {
 	stmt := `INSERT INTO users (name, email,hashed_password, created) VALUES(?, ?, ?, CURRENT_TIMESTAMP)`
 	_, err = s.db.Exec(stmt, u.Name, u.Email, string(hashed_password))
 	if err != nil {
-		var mySQLError *sql.
-		if errors.As(err, &mySQLError) {
-			if mySQLError.Number == 1062 && strings.Contains(mySQLError.Message, "users_uc_email") {
-				return models.ErrDuplicateEmail
-			}
-		}
 		return err
 	}
 	return nil
