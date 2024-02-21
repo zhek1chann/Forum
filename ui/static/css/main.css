@@ -18,7 +18,7 @@ body {
 }
 
 header, nav, main, footer {
-    padding: 2px calc((100% - 800px) / 2) 0;
+    padding: 2px calc((80% - 800px) / 2) 0;
 }
 
 main {
@@ -107,15 +107,8 @@ nav form {
 nav div {
     width: 50%;
     float: left;
-}
-
-nav div:last-child {
-    text-align: right;
-}
-
-nav div:last-child a {
-    margin-left: 1.5em;
-    margin-right: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 nav a.live {
@@ -311,3 +304,21 @@ footer {
     color: #6A6C6F;
     text-align: center;
 }
+
+div.body {
+
+    display: flex;
+}
+
+div.middle{
+    width: 600%;
+}
+
+div.left{
+    width: 20%;
+}
+
+div.right{
+    width: 20%;
+}
+

@@ -1,7 +1,7 @@
 package repo
 
 import (
-	"database/sql"
+	"forum/internal/repo/sqlite"
 	"forum/models"
 )
 
@@ -44,16 +44,6 @@ type RepoI interface {
 	// CommentRepo
 }
 
-type repo struct {
-	db *sql.DB
-}
-
 func New(storagePath string) (RepoI, error) {
-	db, err := NewDB(storagePath)
-	if err != nil {
-		return nil, err
-	}
-	return &repo{
-		db: db,
-	}, nil
+	return sqlite.NewDB(storagePath)
 }

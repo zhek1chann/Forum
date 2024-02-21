@@ -12,13 +12,30 @@
     <header>
         <h1><a href="/">GachiMuchi</a></h1>
     </header>
-    {{template "nav" .}}
-    <main>
-        {{with .Flash}}
-        <div class="flash">{{.}}</div>
-        {{end}}
-        {{template "main" .}}
-    </main>
+    <div class="body">
+
+        <div class="left">
+            {{template "nav" .}}
+
+        </div>
+        <div class="middle">
+            <main>
+            {{with .Flash}}
+            <div class="flash">{{.}}</div>
+            {{end}}
+            {{template "main" .}}
+        </main>
+
+        </div>
+        <div class="right">
+            <div>user Max</div>
+
+        </div>
+
+    </div>
+    
+    
+        
     <footer>
         Powered by <a href='https://golang.org/'>Go</a> in {{.CurrentYear}}
     </footer>
