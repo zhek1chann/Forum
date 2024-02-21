@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"forum/app"
 	"forum/internal/config"
 	"forum/internal/handlers"
@@ -47,6 +48,6 @@ func main() {
 	}
 
 	infoLog.Printf("Starting server on http://localhost%s", cfg.Address)
-	srv.ListenAndServe()
+	fmt.Println(srv.ListenAndServe())
 
 }

@@ -17,7 +17,7 @@ body {
     overflow-y: scroll;
 }
 
-header, nav, main, footer {
+header,  footer {
     padding: 2px calc((80% - 800px) / 2) 0;
 }
 
@@ -83,56 +83,6 @@ header {
 header a {
     color: #34495E;
     text-decoration: none;
-}
-
-nav {
-    border-bottom: 1px solid #E4E5E7;
-    padding-top: 17px;
-    padding-bottom: 15px;
-    background: #F7F9FA;
-    height: 60px;
-    color: #6A6C6F;
-}
-
-nav a {
-    margin-right: 1.5em;
-    display: inline-block;
-}
-
-nav form {
-    display: inline-block;
-    margin-left: 1.5em;
-}
-
-nav div {
-    width: 50%;
-    float: left;
-    display: flex;
-    flex-direction: column;
-}
-
-nav a.live {
-    color: #34495E;
-    cursor: default;
-}
-
-nav a.live:hover {
-    text-decoration: none;
-}
-
-nav a.live:after {
-    content: '';
-    display: block;
-    position: relative;
-    left: calc(50% - 7px);
-    top: 9px;
-    width: 14px;
-    height: 14px;
-    background: #F7F9FA;
-    border-left: 1px solid #E4E5E7;
-    border-bottom: 1px solid #E4E5E7;
-    /* -moz-transform: rotate(45deg);
-    -webkit-transform: rotate(-45deg); */
 }
 
 a.button, input[type="submit"] {
@@ -305,20 +255,27 @@ footer {
     text-align: center;
 }
 
-div.body {
-
+.body {
     display: flex;
+    margin-top: 3%;
+    margin-bottom: 3%;
 }
 
-div.middle{
-    width: 600%;
+.middle{
+    margin-left: 5%;
+    margin-right: 5%;
+
+    width: 50%;
 }
 
-div.left{
+.left{
     width: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
 }
 
-div.right{
+.right{
     width: 20%;
 }
 

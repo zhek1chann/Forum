@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{{template "title" .}} - Snippetbox</title>
+    {{template "css" .}}
     <link rel='stylesheet'  href='/static/css/main.css' type="text/css">
     <link rel='shortcut icon' href='/static/img/favicon.ico' type='image/x-icon'>
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700'>
@@ -15,7 +16,7 @@
     <div class="body">
 
         <div class="left">
-            {{template "nav" .}}
+            {{template "leftMenu" .}}
 
         </div>
         <div class="middle">

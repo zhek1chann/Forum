@@ -1,0 +1,15 @@
+{{define "css"}}
+    <link rel="stylesheet" href="/static/css/left.css">
+{{end}}
+
+{{define "leftMenu"}}
+    <ul class="menu-main">
+        <li><a href="/">Home</a></li>
+        <li><a href="about">About</a></li>
+        <li><a href="">Blog</a></li>
+         <!-- {{if .IsAuthenticated}} -->
+        <li><a href='/snippet/create'>Create snippet</a></li>
+        <!-- {{end}} -->
+
+    </ul>
+{{end}}
