@@ -10,6 +10,8 @@ type Config struct {
 	Address     string
 }
 
+
+
 func MustLoad() *Config {
 	addr := flag.String("addr", ":8080", "USAGE: :PORT, EX: \":8080\"")
 	env := flag.String("env", "dev", "USAGE: DEV, EX: DEV|STAGE|PROD")

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"forum/app"
 	"forum/internal/config"
 	"forum/internal/handlers"
 	repo "forum/internal/repository"
@@ -12,15 +13,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-// type application struct {
-// 	errorLog *log.Logger
-// 	infoLog  *log.Logger
-
-// 	// templateCache  map[string]*template.Template
-// 	// formDecoder    *form.Decoder
-// 	// sessionManager *scs.SessionManager
-// }
-
 func main() {
 
 	infoLog := log.New(os.Stdout, "\u001b[32mINFO\t\u001b[0m", log.Ldate|log.Ltime)
@@ -28,12 +20,21 @@ func main() {
 
 	cfg := config.MustLoad()
 
+	tc, err := app.NewTemplateCache()
+
+	if err != nil {
+		errLog.Fatal(err)
+	}
+
+	app := app.New(infoLog, errLog, tc)
+
+	_ = app
 	// init db
-	storage, err := repo.New(cfg.StoragePath)
+	r, err := repo.New(cfg.StoragePath)
 	if err != nil {
 		log.Fatal(err)
 	}
-	_ = storage
+	_ = r
 
 	srv := &http.Server{
 		Addr:         cfg.Address,
