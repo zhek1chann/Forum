@@ -14,7 +14,6 @@ type Application struct {
 
 	// formDecoder    *form.Decoder
 	// sessionManager *scs.SessionManager
-	debug bool
 }
 
 func New(infoLog, errorLog *log.Logger, templateCache map[string]*template.Template) *Application {

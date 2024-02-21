@@ -34,7 +34,7 @@ func NewTemplateCache() (map[string]*template.Template, error) {
 		name := filepath.Base(page)
 
 		patterns := []string{
-			"html/base.html",
+			"html/*.layout.html",
 			"html/partials/*.html",
 			page,
 		}
@@ -49,7 +49,7 @@ func NewTemplateCache() (map[string]*template.Template, error) {
 	return cache, nil
 }
 
-func (app *Application) render(w http.ResponseWriter, status int, page string, data *models.TemplateData) {
+func (app *Application) Render(w http.ResponseWriter, status int, page string, data *models.TemplateData) {
 	ts, ok := app.templateCache[page]
 	if !ok {
 		err := fmt.Errorf("the template %s does not exist", page)
@@ -66,7 +66,7 @@ func (app *Application) render(w http.ResponseWriter, status int, page string, d
 	buf.WriteTo(w)
 }
 
-func (app *Application) newTemplateData(r *http.Request) *models.TemplateData {
+func (app *Application) NewTemplateData(r *http.Request) *models.TemplateData {
 	return &models.TemplateData{
 		CurrentYear: time.Now().Year(),
 		//Flash:           app.sessionManager.PopString(r.Context(), "flash"),

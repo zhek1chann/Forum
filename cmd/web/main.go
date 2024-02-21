@@ -4,7 +4,8 @@ import (
 	"forum/app"
 	"forum/internal/config"
 	"forum/internal/handlers"
-	repo "forum/internal/repository"
+	"forum/internal/repo"
+	"forum/internal/service"
 	"log"
 	"net/http"
 	"os"
@@ -28,18 +29,18 @@ func main() {
 
 	app := app.New(infoLog, errLog, tc)
 
-	_ = app
-	// init db
 	r, err := repo.New(cfg.StoragePath)
 	if err != nil {
 		log.Fatal(err)
 	}
-	_ = r
+	s := service.New(r)
+
+	h := handlers.New(s, app)
 
 	srv := &http.Server{
 		Addr:         cfg.Address,
 		ErrorLog:     errLog,
-		Handler:      handlers.Routes(),
+		Handler:      h.Routes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,

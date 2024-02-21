@@ -1,3 +1,0 @@
-addr=":8080"
-env="dev"
-dsn="./data/storage.db"

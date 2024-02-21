@@ -2,29 +2,29 @@ package handlers
 
 import "net/http"
 
-func login(w http.ResponseWriter, r *http.Request) {
-	methodResolver(w, r, loginGet, loginPost)
+func (h *handler) login(w http.ResponseWriter, r *http.Request) {
+	methodResolver(w, r, h.loginGet, h.loginPost)
 }
 
-func loginGet(w http.ResponseWriter, r *http.Request) {
+func (h *handler) loginGet(w http.ResponseWriter, r *http.Request) {
 
 }
-func loginPost(w http.ResponseWriter, r *http.Request) {
-
-}
-
-func signup(w http.ResponseWriter, r *http.Request) {
-	methodResolver(w, r, signupGet, signupPost)
-}
-
-func signupGet(w http.ResponseWriter, r *http.Request) {
+func (h *handler) loginPost(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func signupPost(w http.ResponseWriter, r *http.Request) {
+func (h *handler) signup(w http.ResponseWriter, r *http.Request) {
+	methodResolver(w, r, h.signupGet, h.signupPost)
+}
+
+func (h *handler) signupGet(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func logoutPost(w http.ResponseWriter, r *http.Request) {
+func (h *handler) signupPost(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (h *handler) logoutPost(w http.ResponseWriter, r *http.Request) {
 
 }

@@ -6,19 +6,19 @@ import (
 	"strings"
 )
 
-func postCreate(w http.ResponseWriter, r *http.Request) {
-	methodResolver(w, r, postCreateGet, postCreatePost)
+func (h *handler) postCreate(w http.ResponseWriter, r *http.Request) {
+	methodResolver(w, r, h.postCreateGet, h.postCreatePost)
 }
 
-func postCreateGet(w http.ResponseWriter, r *http.Request) {
+func (h *handler) postCreateGet(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Post Create Get Page")
 }
 
-func postCreatePost(w http.ResponseWriter, r *http.Request) {
+func (h *handler) postCreatePost(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func postView(w http.ResponseWriter, r *http.Request) {
+func (h *handler) postView(w http.ResponseWriter, r *http.Request) {
 	id, _ := strings.CutPrefix(r.URL.Path, "/post/")
 	fmt.Fprintf(w, "View Post %s", id)
 }

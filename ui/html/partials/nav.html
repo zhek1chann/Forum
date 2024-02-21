@@ -3,21 +3,21 @@
     <div>
     <a href="/">Home</a>
     <a href="/about">About</a>
-    {{if .IsAuthenticated}}
+    <!-- {{if .IsAuthenticated}} -->
     <a href='/snippet/create'>Create snippet</a>
-    {{end}}
+    <!-- {{end}} -->
 </div>
 <div>
-    {{if .IsAuthenticated}}
+    <!-- {{if .IsAuthenticated}} -->
     <form action="/user/logout" method="POST">
-        <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
+        <!-- <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'> -->
         <button>Logout</button>
     </form>
     <a href="/account/view">Account</a>
-    {{else}}
+    <!-- {{else}} -->
     <a href="/user/signup">Signup</a>
     <a href="/user/login">Login</a>
-    {{end}}
+    <!-- {{end}} -->
 </div>
 </nav>
 {{end}}
