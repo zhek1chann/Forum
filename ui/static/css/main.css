@@ -24,7 +24,7 @@ header,  footer {
 main {
     margin-top: 54px;
     margin-bottom: 54px;
-    min-height: calc(100vh - 345px);
+    min-height: calc(100vh - 340px);
     overflow: auto;
 }
 
@@ -279,3 +279,10 @@ footer {
     width: 20%;
 }
 
+.menu{
+    list-style-type: none;
+}
+
+.menu li{
+    margin-bottom: 5px;
+}
