@@ -52,7 +52,7 @@ func NewDB(storagePath string) (*Sqlite, error) {
 		);`,
 		`CREATE TABLE IF NOT EXISTS Category (
 			category_id INTEGER PRIMARY KEY,
-			Name TEXT NOT NULL
+			name TEXT NOT NULL
 		);`,
 		`CREATE TABLE IF NOT EXISTS Post_Category (
 			category_id INTEGER,

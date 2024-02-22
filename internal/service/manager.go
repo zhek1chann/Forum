@@ -10,6 +10,10 @@ type service struct {
 }
 
 type ServiceI interface {
+	UserServiceI
+}
+
+type UserServiceI interface {
 	GetUser(int) *models.User
 	CreateUser(*models.User) error
 }
