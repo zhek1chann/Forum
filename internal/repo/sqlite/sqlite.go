@@ -19,19 +19,15 @@ func NewDB(storagePath string) (*Sqlite, error) {
 
 	// List of queries to create tables
 	tableCreationQueries := []string{
-		`CREATE TABLE IF NOT EXISTS User (
+		`CREATE TABLE IF NOT EXISTS users (
 			user_id INTEGER PRIMARY KEY,
 			name TEXT NOT NULL,
 			email TEXT NOT NULL UNIQUE,
 			hashed_password TEXT NOT NULL,
-			created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,repo
-			repo
-			repo
-			repo
-			repo
+			created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			status INTEGER DEFAULT 0
 		);`,
-		`CREATE TABLE IF NOT EXISTS Post (
+		`CREATE TABLE IF NOT EXISTS post (
 			post_id INTEGER PRIMARY KEY,
 			user_id INTEGER,
 			title TEXT NOT NULL,
@@ -42,7 +38,7 @@ func NewDB(storagePath string) (*Sqlite, error) {
 			image_name TEXT,
 			FOREIGN KEY (user_id) REFERENCES User(user_id)
 		);`,
-		`CREATE TABLE IF NOT EXISTS Post_User_Like (
+		`CREATE TABLE IF NOT EXISTS post_user_Like (
 			user_id INTEGER,
 			post_id INTEGER,
 			is_like BOOLEAN,
@@ -50,18 +46,18 @@ func NewDB(storagePath string) (*Sqlite, error) {
 			FOREIGN KEY (user_id) REFERENCES User(user_id),
 			FOREIGN KEY (post_id) REFERENCES Post(post_id)
 		);`,
-		`CREATE TABLE IF NOT EXISTS Category (
+		`CREATE TABLE IF NOT EXISTS category (
 			category_id INTEGER PRIMARY KEY,
 			name TEXT NOT NULL
 		);`,
-		`CREATE TABLE IF NOT EXISTS Post_Category (
+		`CREATE TABLE IF NOT EXISTS post_category (
 			category_id INTEGER,
 			post_id INTEGER,
 			PRIMARY KEY (category_id, post_id),
 			FOREIGN KEY (category_id) REFERENCES Category(category_id),
 			FOREIGN KEY (post_id) REFERENCES Post(post_id)
 		);`,
-		`CREATE TABLE IF NOT EXISTS Comments (
+		`CREATE TABLE IF NOT EXISTS comments (
 			comment_id INTEGER PRIMARY KEY,
 			post_id INTEGER,
 			user_id INTEGER,

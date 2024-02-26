@@ -12,6 +12,7 @@ func (s *Sqlite) GetUserByEmail(email string) (*models.User, error) {
 	var u models.User
 	stmt := `SELECT id, name, email, created FROM users WHERE id=?`
 	err := s.db.QueryRow(stmt, email).Scan(&u.ID, &u.Name, &u.Email, &u.Created)
+
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, models.ErrNoRecord
@@ -24,7 +25,7 @@ func (s *Sqlite) GetUserByEmail(email string) (*models.User, error) {
 
 func (s *Sqlite) UpdateUserByID(string) (*models.User, error) { return nil, nil }
 
-func (s *Sqlite) CreateUser(u *models.User) error {
+func (s *Sqlite) CreateUser(u models.User) error {
 	hashed_password, err := bcrypt.GenerateFromPassword(u.HashedPassword, 12)
 	if err != nil {
 		return err
@@ -32,6 +33,9 @@ func (s *Sqlite) CreateUser(u *models.User) error {
 	stmt := `INSERT INTO users (name, email,hashed_password, created) VALUES(?, ?, ?, CURRENT_TIMESTAMP)`
 	_, err = s.db.Exec(stmt, u.Name, u.Email, string(hashed_password))
 	if err != nil {
+		if err.Error() == "UNIQUE constraint failed: users.email" {
+			return models.ErrDuplicateEmail
+		}
 		return err
 	}
 	return nil

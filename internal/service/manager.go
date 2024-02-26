@@ -15,7 +15,7 @@ type ServiceI interface {
 
 type UserServiceI interface {
 	GetUser(int) *models.User
-	CreateUser(*models.User) error
+	CreateUser(models.User) error
 }
 
 func New(r repo.RepoI) ServiceI {

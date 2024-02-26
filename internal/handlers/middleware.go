@@ -9,7 +9,7 @@ import (
 
 // }
 func methodResolver(w http.ResponseWriter, r *http.Request, get, post func(w http.ResponseWriter, r *http.Request)) {
-	fmt.Print(r.URL)
+	fmt.Println(r.URL)
 	switch r.Method {
 	case http.MethodGet:
 		get(w, r)
