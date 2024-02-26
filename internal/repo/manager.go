@@ -11,6 +11,9 @@ type UserRepo interface {
 	GetUserByEmail(string) (*models.User, error)
 	UpdateUserByID(string) (*models.User, error)
 	Authenticate(email, password string) (int, error)
+	CreateSession(*models.Session) error
+	DeleteSessionByUserID(int) error
+	DeleteSessionByToken(string) error
 }
 
 // type PostRepo interface {

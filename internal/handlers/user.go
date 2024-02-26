@@ -3,6 +3,7 @@ package handlers
 import (
 	"errors"
 	"forum/models"
+	"forum/pkg/cookie"
 	"forum/pkg/validator"
 	"net/http"
 )
@@ -13,10 +14,39 @@ func (h *handler) login(w http.ResponseWriter, r *http.Request) {
 
 func (h *handler) loginGet(w http.ResponseWriter, r *http.Request) {
 	data := h.app.NewTemplateData(r)
+	data.Form = models.UserLoginForm{}
 	h.app.Render(w, http.StatusOK, "login.html", data)
 }
-func (h *handler) loginPost(w http.ResponseWriter, r *http.Request) {
 
+func (h *handler) loginPost(w http.ResponseWriter, r *http.Request) {
+	form := models.UserLoginForm{
+		Email:    r.FormValue("email"),
+		Password: r.FormValue("password"),
+	}
+
+	form.CheckField(validator.NotBlank(form.Email), "email", "This field cannot be blank")
+	form.CheckField(validator.NotBlank(form.Password), "password", "This field cannot be blank")
+
+	session, err := h.service.Authenticate(form.Email, form.Password)
+
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			form.AddFieldError("email", "email doesn't exist")
+			data := h.app.NewTemplateData(r)
+			data.Form = form
+			h.app.Render(w, http.StatusUnprocessableEntity, "login.html", data)
+		} else if errors.Is(err, models.ErrInvalidCredentials) {
+			form.AddFieldError("password", models.ErrInvalidCredentials.Error())
+			data := h.app.NewTemplateData(r)
+			data.Form = form
+			h.app.Render(w, http.StatusUnprocessableEntity, "login.html", data)
+		} else {
+			h.app.ServerError(w, err)
+		}
+		return
+	}
+	cookie.SetSessionCookie(w, session.Token, session.ExpTime)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func (h *handler) signup(w http.ResponseWriter, r *http.Request) {
@@ -48,8 +78,8 @@ func (h *handler) signupPost(w http.ResponseWriter, r *http.Request) {
 		h.app.Render(w, http.StatusUnprocessableEntity, "signup.html", data)
 		return
 	}
-
-	err := h.service.CreateUser(form.FromToUser())
+	user := form.FromToUser()
+	err := h.service.CreateUser(user)
 	if err != nil {
 		if errors.Is(err, models.ErrDuplicateEmail) {
 			form.AddFieldError("email", "Email address is already in use")
@@ -61,7 +91,7 @@ func (h *handler) signupPost(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	http.Redirect(w, r, "/user/login", http.StatusSeeOther)
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
 
 }
 

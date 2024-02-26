@@ -3,16 +3,16 @@
 <div>
 
     <ul class="menu">
-        <!-- {{if .IsAuthenticated}} -->
+        {{if .IsAuthenticated}}
         <li><form action="/logout" method="POST">
             <!-- <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'> -->
             <button>Logout</button>
         </form></li>
         <li><a href="/account/view">Account</a></li>
-        <!-- {{else}} -->
+        {{else}}
         <li><a href="/signup">Signup</a></li>
         <li><a href="/login">Login</a></li>
-        <!-- {{end}} -->
+        {{end}}
     </ul>
 </div>
 

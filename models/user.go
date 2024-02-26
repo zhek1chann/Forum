@@ -23,8 +23,14 @@ type UserSignupForm struct {
 	validator.Validator `form:"-"`
 }
 
+type UserLoginForm struct {
+	Email               string `form:"email"`
+	Password            string `form:"password"`
+	validator.Validator `form:"-"`
+}
+
 func (u UserSignupForm) FromToUser() User {
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(u.Password), 12)
 	return User{
 		Name:           u.Name,
 		Email:          u.Email,
