@@ -1,11 +1,32 @@
 package sqlite
 
+import "fmt"
+
 func AddCategoryToPost(int, []int) error {
 	return nil
 }
 
-func GetALLCategory() (map[int]string, error) {
-	return nil, nil
+func (s *Sqlite) GetALLCategory() ([]string, error) {
+	op := "sqlite.GetAllCategory"
+	stmt := `SELECT name FROM category ORDER BY id ASC`
+
+	rows, err := s.db.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var categories []string
+	for rows.Next() {
+		var categoryName string
+		err := rows.Scan(&categoryName)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", op, err)
+		}
+		categories = append(categories, categoryName)
+	}
+
+	return categories, nil
 }
 
 func CreateCategory(string) error {

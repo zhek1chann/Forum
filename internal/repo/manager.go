@@ -27,11 +27,11 @@ type UserRepo interface {
 // 	GetAllPostPaginated(int, int) ([]*models.Post, error)
 // }
 
-// type CategoryRepo interface {
-// 	AddCategoryToPost(int, []int) error
-// 	GetALLCategory() (map[int]string, error)
-// 	CreateCategory(string) error
-// }
+type CategoryRepo interface {
+	// AddCategoryToPost(int, []int) error
+	GetALLCategory() ([]string, error)
+	// CreateCategory(string) error
+}
 
 // type CommentRepo interface {
 // 	CreateComment(*models.Comment) error
@@ -43,7 +43,7 @@ type UserRepo interface {
 type RepoI interface {
 	UserRepo
 	//PostRepo
-	// CategoryRepo
+	CategoryRepo
 	// CommentRepo
 }
 

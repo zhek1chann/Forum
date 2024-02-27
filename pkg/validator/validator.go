@@ -33,6 +33,10 @@ func NotBlank(value string) bool {
 	return strings.TrimSpace(value) != ""
 }
 
+func NotSelected(arr []string) bool {
+	return len(arr) != 0
+}
+
 func MinChars(value string, n int) bool {
 	return utf8.RuneCountInString(value) >= n
 }

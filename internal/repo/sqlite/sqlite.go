@@ -17,7 +17,6 @@ func NewDB(storagePath string) (*Sqlite, error) {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	// List of queries to create tables
 	tableCreationQueries := []string{
 		`CREATE TABLE IF NOT EXISTS users (
 			id INTEGER PRIMARY KEY,
@@ -82,13 +81,26 @@ func NewDB(storagePath string) (*Sqlite, error) {
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
 		}
-
 		_, err = stmt.Exec()
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
 		}
 		stmt.Close()
 	}
+
+	// defaultCategories := []string{"Technology", "Entertainment", "Sports", "Education"}
+	// for _, category := range defaultCategories {
+	// 	insertQuery := `INSERT INTO category (name) VALUES (?)`
+	// 	stmt, err := db.Prepare(insertQuery)
+	// 	if err != nil {
+	// 		return nil, fmt.Errorf("%s: %w", op, err)
+	// 	}
+	// 	_, err = stmt.Exec(category)
+	// 	if err != nil {
+	// 		return nil, fmt.Errorf("%s: %w", op, err)
+	// 	}
+	// 	stmt.Close()
+	// }
 
 	return &Sqlite{db: db}, nil
 }

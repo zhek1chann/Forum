@@ -29,6 +29,13 @@ func (h *handler) loginPost(w http.ResponseWriter, r *http.Request) {
 
 	session, err := h.service.Authenticate(form.Email, form.Password)
 
+	if !form.Valid() {
+		data := h.app.NewTemplateData(r)
+		data.Form = form
+		h.app.Render(w, http.StatusUnprocessableEntity, "signup.html", data)
+		return
+	}
+
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			form.AddFieldError("email", "email doesn't exist")

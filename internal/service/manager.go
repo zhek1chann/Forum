@@ -11,6 +11,7 @@ type service struct {
 
 type ServiceI interface {
 	UserServiceI
+	CategoryServiceI
 }
 
 type UserServiceI interface {
@@ -18,6 +19,13 @@ type UserServiceI interface {
 	CreateUser(models.User) error
 	Authenticate(string, string) (*models.Session, error)
 	DeleteSession(string) error
+}
+
+type PostServiceI interface {
+}
+
+type CategoryServiceI interface {
+	GetAllCategory() ([]string, error)
 }
 
 func New(r repo.RepoI) ServiceI {

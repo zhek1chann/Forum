@@ -29,8 +29,9 @@ type Comment struct {
 }
 
 type PostForm struct {
-	Title               string `form:"name"`
-	Content             string `form:"email"`
-	Category            map[int]string
+	Title               string   `form:"title"`
+	Content             string   `form:"content"`
+	Categories            []int    `form:"category"`
+	CategoriesString      []string `form:"category"`
 	validator.Validator `form:"-"`
 }
