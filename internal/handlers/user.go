@@ -78,7 +78,8 @@ func (h *handler) signupPost(w http.ResponseWriter, r *http.Request) {
 		h.app.Render(w, http.StatusUnprocessableEntity, "signup.html", data)
 		return
 	}
-	user := form.FromToUser()
+	//
+	user := form.FormToUser()
 	err := h.service.CreateUser(user)
 	if err != nil {
 		if errors.Is(err, models.ErrDuplicateEmail) {
@@ -96,5 +97,11 @@ func (h *handler) signupPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) logoutPost(w http.ResponseWriter, r *http.Request) {
+	c := cookie.GetSessionCookie(r)
+	if c != nil {
+		h.service.DeleteSession(c.Value)
+		cookie.ExpireSessionCookie(w)
+	}
 
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

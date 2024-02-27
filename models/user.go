@@ -16,6 +16,12 @@ type User struct {
 	Status         int
 }
 
+type UserLoginForm struct {
+	Email               string `form:"email"`
+	Password            string `form:"password"`
+	validator.Validator `form:"-"`
+}
+
 type UserSignupForm struct {
 	Name                string `form:"name"`
 	Email               string `form:"email"`
@@ -23,13 +29,7 @@ type UserSignupForm struct {
 	validator.Validator `form:"-"`
 }
 
-type UserLoginForm struct {
-	Email               string `form:"email"`
-	Password            string `form:"password"`
-	validator.Validator `form:"-"`
-}
-
-func (u UserSignupForm) FromToUser() User {
+func (u UserSignupForm) FormToUser() User {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(u.Password), 12)
 	return User{
 		Name:           u.Name,

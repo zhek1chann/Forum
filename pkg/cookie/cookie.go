@@ -24,3 +24,13 @@ func SetSessionCookie(w http.ResponseWriter, token string, expirationTime time.T
 	}
 	http.SetCookie(w, &cookie)
 }
+
+func ExpireSessionCookie(w http.ResponseWriter) {
+	cookie := http.Cookie{
+		Name:   cookieName,
+		Value:  "",
+		Path:   "/",
+		MaxAge: -1,
+	}
+	http.SetCookie(w, &cookie)
+}
