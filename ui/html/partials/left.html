@@ -4,5 +4,12 @@
          {{if .IsAuthenticated}}
         <li><a href='/post/create'>Create post</a></li>
         {{end}}
+   
+            <div class="category">
+                <label class="category-label">Category</label>
+                    {{range $index, $category := .Categories}}
+                    <a href="/category/{{$category}}">{{$category}}</a>
+                    {{end}}
+            </div>
     </ul>
 {{end}}

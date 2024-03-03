@@ -1,38 +1,40 @@
 {{define "title"}}Home {{end}}
 {{define "main"}}
-<form action="/" method="POST">
-        <div>
-                <label>Category</label>
-                {{range $index, $category := .Categories}}
-                    <input type="checkbox" name="categories" value="{{$index}}">{{$category}}</input>
-                {{end}}
-        </div>
-        <div>
-                <input class="Filter" type="submit" value="Apply">
-        </div>
-</form>
+
 
 <h2>Posts</h2>
-<div>
+<div class="posts-container">
     {{range .Posts}}
-    <article>
-        <div>
-            <a href="post/{{.UserID}}"><h3>{{.Title}}</h3></a>
-            <time datetime="{{.Created}}"></time>
-            <div>Posted by {{.UserName}}</div>
-        </div>
-        <section>
-            <p>{{.Content}}</p>
-        </section>
-        <div>
-            <div>Likes: {{.Like}}, Dislikes: {{.Dislike}}</div>
-            <div>Categories: 
-                {{range $id, $name := .Categories}}
-                        {{$name}},
-                {{end}}
+    <div class="post-card">
+        <div class="card-header">
+            <div class="user-data">
+                <div>
+                    <p>By {{.UserName}}</p>
+                    <span><time datetime=""></time>{{humanDate .Created }}</span>
+                </div>
             </div>
         </div>
-    </article>
+            <div class="content">
+                <div class="title">
+                    <a href="post/{{.UserID}}"> {{.Title}} </a>
+                </div>
+                <div class="desc">
+                    {{.Content}}
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="category-tags-wrapper">
+                    {{range $category := .Categories}}
+                    <div class="category-tag">{{$category}}</div>
+                    {{end}}
+                </div>
+                <div>
+                    <span>Likes: {{.Like}} </span> <span>
+                        Dislikes: {{.Dislike}}
+                    </span> 
+                </div>
+            </div>
+        </div>
     {{end}}
 </div>
 

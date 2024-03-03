@@ -292,3 +292,14 @@ footer {
 .menu li{
     margin-bottom: 5px;
 }
+
+.category{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.category-label{
+    margin-bottom: 5px;
+}

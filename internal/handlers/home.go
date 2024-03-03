@@ -43,6 +43,10 @@ func (h *handler) homeGet(w http.ResponseWriter, r *http.Request) {
 	h.app.Render(w, http.StatusOK, "home.html", data)
 }
 
+func (h *handler) category(w http.ResponseWriter, r *http.Request) {
+	
+}
+
 func (h *handler) homePost(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		h.app.ClientError(w, http.StatusBadRequest)
