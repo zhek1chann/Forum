@@ -47,13 +47,24 @@ func (s *service) GetAllPostPaginated(curentPage, pageSize int) (*[]models.Post,
 	return posts, nil
 }
 
-func (s *service) GetPageNumber(pageSize int) (int, error) {
-	return s.repo.GetPageNumber(pageSize)
+func (s *service) GetAllPostByCategoryPaginated(curentPage, pageSize, category int) (*[]models.Post, error) {
+	posts, err := s.repo.GetAllPostByCategoryPaginated(curentPage, pageSize, category)
+	if err != nil {
+		return nil, err
+	}
+	if err = s.getCategoryToPost(posts); err != nil {
+		return nil, err
+	}
+	return posts, nil
 }
 
-func (s *service) GetAllPostByCategories(categories []int) (*[]models.Post, error) {
-	fmt.Println(AddCategory(categories))
-	posts, err := s.repo.GetAllPostByCategories(AddCategory(categories))
+func (s *service) GetPageNumber(pageSize int, category int) (int, error) {
+	return s.repo.GetPageNumber(pageSize, category)
+}
+
+func (s *service) GetAllPostByCategory(category int) (*[]models.Post, error) {
+	// fmt.Println(AddCategory(category))
+	posts, err := s.repo.GetAllPostByCategory(category)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
@@ -67,7 +78,6 @@ func (s *service) GetAllPostByUser(token string) (*[]models.Post, error) {
 		return nil, err
 	}
 	posts, err := s.repo.GetAllPostByUserID(userID)
-
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +92,6 @@ func (s *service) getCategoryToPost(posts *[]models.Post) error {
 		categories, err := s.repo.GetCategoriesByPostID((*posts)[i].PostID)
 		if err != nil {
 			return err
-
 		}
 		(*posts)[i].Categories = categories
 	}

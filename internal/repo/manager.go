@@ -26,12 +26,13 @@ type PostRepo interface {
 	GetCategoriesByPostID(int) (map[int]string, error)
 	// GetAllPost() (*models.Post, error)
 	// UpdatePost(string, *models.Post) error
-	//AddLikeAndDislike(bool, string, string) error
+	// AddLikeAndDislike(bool, string, string) error
 	// DeleteLikeAndDislike(int, int) error
 	GetAllPostByUserID(int) (*[]models.Post, error)
-	GetAllPostByCategories(categories []int) (*[]models.Post, error)
-	GetPageNumber(pageSize int) (int, error)
+	GetAllPostByCategory(category int) (*[]models.Post, error)
+	GetPageNumber(pageSize int, category int) (int, error)
 	GetAllPostPaginated(page int, pageSize int) (*[]models.Post, error)
+	GetAllPostByCategoryPaginated(page int, pageSize int, category int) (*[]models.Post, error)
 }
 
 type CategoryRepo interface {

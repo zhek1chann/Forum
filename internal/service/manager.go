@@ -26,8 +26,9 @@ type PostServiceI interface {
 	CreatePost(string, string, string, []int) (int, error)
 	GetPostByID(int) (*models.Post, error)
 	GetAllPostPaginated(int, int) (*[]models.Post, error)
-	GetPageNumber(int) (int, error)
-	GetAllPostByCategories(categories []int) (*[]models.Post, error)
+	GetAllPostByCategoryPaginated(curentPage, pageSize, category int) (*[]models.Post, error)
+	GetPageNumber(int, int) (int, error)
+	GetAllPostByCategory(category int) (*[]models.Post, error)
 	GetAllPostByUser(token string) (*[]models.Post, error)
 }
 

@@ -91,6 +91,11 @@ func (app *Application) NewTemplateData(r *http.Request) *models.TemplateData {
 	}
 }
 
+
+
+
+
+
 func (app *Application) isAuthenticated(r *http.Request) bool {
 	cookie := cookie.GetSessionCookie(r)
 	return cookie != nil && cookie.Value != ""
