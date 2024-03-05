@@ -179,6 +179,7 @@ func (s *Sqlite) GetAllPostByCategory(categoryID int) (*[]models.Post, error) {
 		if err := rows.Scan(&post.PostID, &post.UserID, &post.Title, &post.Content, &post.Created, &post.Like, &post.Dislike, &post.ImageName); err != nil {
 			return nil, err
 		}
+		fmt.Println(post)
 		posts = append(posts, post)
 	}
 
@@ -208,6 +209,7 @@ func (s *Sqlite) GetAllPostByCategoryPaginated(page int, pageSize int, categoryI
 			return nil, err
 		}
 		posts = append(posts, post)
+		fmt.Println(post)
 	}
 
 	return &posts, nil
@@ -238,21 +240,20 @@ func (s *Sqlite) GetAllPostPaginated(page int, pageSize int) (*[]models.Post, er
 func (s *Sqlite) GetPageNumber(pageSize int, category int) (int, error) {
 	var totalPosts int
 	op := "sqlite.GetPageNumber"
-	switch category {
-	case 0:
+	if category == 0 {
 		stmt := `SELECT COUNT(*) FROM posts`
 		err := s.db.QueryRow(stmt).Scan(&totalPosts)
 		if err != nil {
 			return 0, fmt.Errorf("%s: %w", op, err)
 		}
-	default:
-		stmt := `SELECT COUNT(*)
+	} else {
+		stmt := `SELECT COUNT (*)
 			FROM posts AS p
 			INNER JOIN post_category AS pc ON p.id = pc.post_id
-			WHERE pc.category_id IN (?)
-			GROUP BY p.id
+			WHERE pc.category_id = (?)
 			`
 		err := s.db.QueryRow(stmt, category).Scan(&totalPosts)
+		fmt.Println(totalPosts)
 		if err != nil {
 			return 0, fmt.Errorf("%s: %w", op, err)
 		}

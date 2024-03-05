@@ -40,18 +40,31 @@
 
 <div class="pagination">
     {{ $currentPage := .CurrentPage }}
+    {{ $category := .Category}}
     {{ if gt $currentPage 1 }}
-    <a href="/?page={{sub $currentPage 1}}">Previous</a>
+        {{with $category}}
+                <a href="?category={{toLower $category}}&page={{sub $currentPage 1}}&limit=5">Previous</a>
+                {{else}}
+                <a href="?page={{sub $currentPage 1}}&limit=5">Previous</a>
+        {{ end }}
     {{ end }}
     {{ range $i := sequence 1 .NumberOfPage }}
         {{ if eq $i $currentPage }}
             <span>{{$i}}</span>
         {{ else }}
-            <a href="/?page={{$i}}">{{$i}}</a>
-        {{ end }}
+            {{with $category}}
+                <a href="?category={{toLower $category}}&page={{$i}}&limit=5">{{$i}}</a>
+                {{else}}
+                <a href="?page={{$i}}&limit=5">{{$i}}</a>
+            {{end}}
+        {{end}}
     {{ end }}
     {{ if lt $currentPage .NumberOfPage }}
-    <a href="/?page={{add $currentPage 1}}">Next</a>
+        {{with $category}}
+            <a href="?category={{toLower $category}}&page={{add $currentPage 1}}&limit=5">Next</a>
+            {{else}}
+            <a href="/?page={{add $currentPage 1}}&limit=5">Next</a>
+        {{end}}
     {{ end }}
 </div>
 {{end}}

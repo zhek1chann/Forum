@@ -10,6 +10,7 @@ import (
 	"io/fs"
 	"net/http"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -37,7 +38,9 @@ var functions = template.FuncMap{
 		return a - b
 	},
 	"sequence": sequence,
+	"toLower":  strings.ToLower,
 }
+
 
 func NewTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
@@ -85,16 +88,11 @@ func (app *Application) Render(w http.ResponseWriter, status int, page string, d
 func (app *Application) NewTemplateData(r *http.Request) *models.TemplateData {
 	return &models.TemplateData{
 		CurrentYear: time.Now().Year(),
-		//Flash:           app.sessionManager.PopString(r.Context(), "flash"),
+		// Flash:           app.sessionManager.PopString(r.Context(), "flash"),
 		IsAuthenticated: app.isAuthenticated(r),
-		//CSRFToken:       nosurf.Token(r),
+		// CSRFToken:       nosurf.Token(r),
 	}
 }
-
-
-
-
-
 
 func (app *Application) isAuthenticated(r *http.Request) bool {
 	cookie := cookie.GetSessionCookie(r)

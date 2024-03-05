@@ -7,7 +7,6 @@ import (
 )
 
 func (h *handler) Routes() http.Handler {
-
 	mux := http.NewServeMux()
 
 	fileServer := http.FileServer(neuteredFileSystem{http.FS(ui.Files)})
@@ -21,7 +20,6 @@ func (h *handler) Routes() http.Handler {
 	mux.HandleFunc("/signup", h.signup)
 	mux.HandleFunc("/logout", h.logoutPost)
 	mux.HandleFunc("/user/posts", h.PostByUser)
-	mux.HandleFunc("/category/", h.category)
 	return mux
 }
 

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"forum/models"
 	"net/http"
@@ -17,49 +18,60 @@ func (h *handler) home(w http.ResponseWriter, r *http.Request) {
 	data := h.app.NewTemplateData(r)
 	data, err := h.setUpPage(data, r)
 	if err != nil {
-		h.app.ServerError(w, err)
-	}
-	posts, err := h.service.GetAllPostPaginated(data.CurrentPage, pageSize)
-	if err != nil {
-		h.app.ServerError(w, err)
-	}
-
-	data.Posts = posts
-	h.app.Render(w, http.StatusOK, "home.html", data)
-}
-
-func (h *handler) category(w http.ResponseWriter, r *http.Request) {
-	category := strings.TrimPrefix(r.URL.Path, "/category/")
-	categories, err := h.service.GetAllCategory()
-	if err != nil {
-		h.app.ServerError(w, err)
-	}
-	var category_id int
-	for key, value := range categories {
-		if category == value {
-			category_id = key + 1
-			break
+		if errors.Is(err, models.ErrNoRecord) {
+			h.app.NotFound(w)
+			return
+		} else {
+			h.app.ServerError(w, err)
+			return
 		}
 	}
-	fmt.Print(category)
-	data := h.app.NewTemplateData(r)
-	data, err = h.setUpPage(data, r)
-	if err != nil {
-		h.app.ServerError(w, err)
-	}
-	posts, err := h.service.GetAllPostByCategoryPaginated(data.CurrentPage, pageSize, category_id)
-	if err != nil {
-		h.app.ServerError(w, err)
+	if data.Category_id == 0 {
+		posts, err := h.service.GetAllPostPaginated(data.CurrentPage, pageSize)
+		if err != nil {
+			h.app.ServerError(w, err)
+			return
+		}
+
+		data.Posts = posts
+	} else {
+		posts, err := h.service.GetAllPostByCategoryPaginated(data.CurrentPage, pageSize, data.Category_id)
+		if err != nil {
+			h.app.ServerError(w, err)
+			return
+		}
+
+		data.Posts = posts
+		// for _, value := range *posts {
+		// 	fmt.Println(value)
+		// }
 	}
 
-	data.Posts = posts
 	h.app.Render(w, http.StatusOK, "home.html", data)
+	return
 }
 
 func (h *handler) setUpPage(data *models.TemplateData, r *http.Request) (*models.TemplateData, error) {
-	currentPageStr := r.URL.Query().Get("page")
 	var err error
-	data.NumberOfPage, err = h.service.GetPageNumber(pageSize, data.Category)
+	currentPageStr := r.URL.Query().Get("page")
+	data.Category = strings.Title(r.URL.Query().Get("category"))
+	fmt.Print(data.Category)
+	data.Categories, err = h.service.GetAllCategory()
+	if err != nil {
+		return nil, err
+	}
+	if data.Category != "" {
+		for key, value := range data.Categories {
+			if data.Category == value {
+				data.Category_id = key + 1
+				break
+			}
+		}
+		if data.Category_id == 0 {
+			return nil, models.ErrNoRecord
+		}
+	}
+	data.NumberOfPage, err = h.service.GetPageNumber(pageSize, data.Category_id)
 	if err != nil {
 		return nil, err
 	}
@@ -68,10 +80,6 @@ func (h *handler) setUpPage(data *models.TemplateData, r *http.Request) (*models
 		data.CurrentPage = defaultPage
 	}
 
-	data.Categories, err = h.service.GetAllCategory()
-	if err != nil {
-		return nil, err
-	}
 	return data, nil
 }
 
