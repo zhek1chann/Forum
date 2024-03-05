@@ -7,13 +7,17 @@
     <span>#{{.Post.PostID}}</span>
     </div>
     <pre><code>{{.Post.Content}}</code></pre>
-    <div class='metadata'>
+    <div class='post-footer'>
+            {{range $category := .Post.Categories}}
+            <div class="postCategory">{{$category}}</div>
+            {{end}}
+        </div>
+        <div class="postReactions">
+            <span class="reaction">Like 0</span>
+            <span class="reaction">Dislike 0</span>
+        </div>
     </div>
 
-    <div>
-        {{range $category := .Post.Categories}}
-        <p>{{$category}}</p>
-        {{end}}
-    </div>
+   
 </div>
 {{end}}
