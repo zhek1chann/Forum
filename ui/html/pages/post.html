@@ -3,21 +3,19 @@
 {{define "main"}}
 <div class='snippet'>
     <div class='metadata'>
-    <strong>{{.Post.Title}}</strong>
-    <span>#{{.Post.PostID}}</span>
+        <strong>{{.Post.Title}}</strong>
+        <span>#{{.Post.PostID}}</span>
     </div>
     <pre><code>{{.Post.Content}}</code></pre>
     <div class='post-footer'>
+        <div class="postCategory">
             {{range $category := .Post.Categories}}
-            <div class="postCategory">{{$category}}</div>
+            <p class="categoryFooter">{{$category}}</p>
             {{end}}
         </div>
-        <div class="postReactions">
-            <span class="reaction">Like 0</span>
-            <span class="reaction">Dislike 0</span>
-        </div>
-    </div>
-
-   
+        <div class="postReaction">
+            <p class="reaction">Like 0</p>
+            <p class="reaction">Dislike 0</p>
+        </div>   
 </div>
 {{end}}

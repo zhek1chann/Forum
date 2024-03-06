@@ -16,14 +16,14 @@ func (h *handler) postCreate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) postCreateGet(w http.ResponseWriter, r *http.Request) {
+	var err error
 	data := h.app.NewTemplateData(r)
 
 	data.Form = models.PostForm{}
-	categories, err := h.service.GetAllCategory()
+	data.Categories, err = h.service.GetAllCategory()
 	if err != nil {
 		h.app.ServerError(w, err)
 	}
-	data.Categories = categories
 	h.app.Render(w, http.StatusOK, "create.html", data)
 }
 
@@ -52,7 +52,6 @@ func (h *handler) postCreatePost(w http.ResponseWriter, r *http.Request) {
 	}
 	cookie_ := cookie.GetSessionCookie(r)
 	postID, err := h.service.CreatePost(form.Title, form.Content, cookie_.Value, form.Categories)
-
 	if err != nil {
 		h.app.ServerError(w, err)
 	}
@@ -62,7 +61,6 @@ func (h *handler) postCreatePost(w http.ResponseWriter, r *http.Request) {
 func (h *handler) postView(w http.ResponseWriter, r *http.Request) {
 	id, _ := strings.CutPrefix(r.URL.Path, "/post/")
 	ID, err := strconv.Atoi(id)
-
 	if err != nil {
 		h.app.ClientError(w, 400)
 	}
@@ -79,5 +77,9 @@ func (h *handler) postView(w http.ResponseWriter, r *http.Request) {
 
 	data := h.app.NewTemplateData(r)
 	data.Post = post
+	data.Categories, err = h.service.GetAllCategory()
+	if err != nil {
+		h.app.ServerError(w, err)
+	}
 	h.app.Render(w, http.StatusOK, "post.html", data)
 }
