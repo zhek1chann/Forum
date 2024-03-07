@@ -4,7 +4,9 @@
     margin: 0;
     padding: 0;
     font-size: 18px;
-    font-family: "Ubuntu Mono", monospace;
+    font-family: "Russo One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
 }
 
 html, body {
@@ -31,7 +33,7 @@ main {
 }
 
 h1 a {
-    font-size: 36px;
+    font-size: 60px;
     font-weight: bold;
     background-image: url("/static/img/logo.png");
     background-repeat: no-repeat;
@@ -39,6 +41,15 @@ h1 a {
     height: 36px;
     padding-left: 50px;
     position: relative;
+   
+  font-family: "Honk", system-ui;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "MORF" 15,
+    "SHLN" 50;
+
 }
 
 h1 a:hover {
@@ -272,7 +283,6 @@ footer {
 .middle{
     margin-left: 5%;
     margin-right: 5%;
-
     width: 50%;
 }
 
@@ -390,7 +400,7 @@ footer {
     display:flex;
     text-align: center;
     font-size: 13px;
-    gap: 20px;
+    gap: 30px;
 }
 .reaction{
     float: right;
@@ -410,4 +420,20 @@ footer {
     background-color: #e0e0e0;
     color: #7a7a7a;
     font-size: 13px;
+}
+
+.reactionImg{
+    height: 23px;
+    width: 23px;
+    margin-right: 10px;
+}
+
+.reactionButton{
+    color:#34495E;
+}
+
+.posts-container{
+    overflow-y: scroll;
+    height: min-content;
+    scrollbar-width: none;
 }
