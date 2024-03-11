@@ -6,7 +6,7 @@
         <strong>{{.Post.Title}}</strong>
         <span>#{{.Post.PostID}}</span>
     </div>
-    <pre><code>{{.Post.Content}}</code></pre>
+    <div class="snippetText"><code>{{.Post.Content}}</code></div>
     <div class='post-footer'>
         <div class="postCategory">
             {{range $category := .Post.Categories}}

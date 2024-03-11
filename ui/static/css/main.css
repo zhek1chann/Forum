@@ -61,7 +61,7 @@ h2 {
     font-size: 22px;
     margin-bottom: 36px;
     position: relative;
-    top: -9px;
+    top: 0px;
 }
 
 a {
@@ -188,7 +188,7 @@ button:hover {
     border-radius: 3px;
 }
 
-.snippet pre {
+.snippet .snippetText {
     padding: 18px;
     border-top: 1px solid #E4E5E7;
     border-bottom: 1px solid #E4E5E7;
@@ -314,14 +314,17 @@ footer {
 }
 
 .post-card{
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    box-shadow: rgba(0.24, 0.24, 0.24, 0.24) 5px 5px 5px;
     padding: 30px;
     border-radius: 10px;
+    border-width: 3px;
+    border-color: #62CB31;
+    border-style: solid;
+    padding-top: 15px;
 }
 
 .post-card .card-header{
-    display: flex;
-    justify-content: space-between;
+
     align-items: center;
     margin-bottom: 20px;
 }
@@ -333,7 +336,7 @@ footer {
 }
 
 .post-card .card-header .user-data{
-    display: flex;
+
     gap: 12px;
 }
 
@@ -436,4 +439,23 @@ footer {
     overflow-y: scroll;
     height: min-content;
     scrollbar-width: none;
+}
+
+.post-card-Username{
+    font-size: 12px;
+    color: #7a7a7a;
+}
+
+.post-card-Date{    
+    font-size: 12px;
+    color: #7a7a7a;
+}
+.post-card-NameDate{
+    display: flex;
+    justify-content: space-between;
+}
+
+.chosenCategory{
+    color: #34495E;
+    text-decoration: underline;
 }
