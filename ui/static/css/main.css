@@ -311,6 +311,8 @@ footer {
     flex-direction: column;
     gap: 25px;
     margin-bottom: 20px;
+    overflow-y: auto;
+    height: 100%;
 }
 
 .post-card{
@@ -326,7 +328,7 @@ footer {
 .post-card .card-header{
 
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 .post-card .card-header img{
@@ -458,4 +460,12 @@ footer {
 .chosenCategory{
     color: #34495E;
     text-decoration: underline;
+}
+
+.next{
+    margin-left: 8px;
+}
+
+.previous{
+    margin-right: 8px;
 }

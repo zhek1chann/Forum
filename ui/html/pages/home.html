@@ -54,9 +54,9 @@
     {{ $category := .Category}}
     {{ if gt $currentPage 1 }}
         {{with $category}}
-                <a href="?category={{toLower $category}}&page={{sub $currentPage 1}}&limit=5">Previous</a>
+                <a href="?category={{toLower $category}}&page={{sub $currentPage 1}}&limit=5" class="previous">Previous</a>
                 {{else}}
-                <a href="?page={{sub $currentPage 1}}&limit=5">Previous</a>
+                <a href="?page={{sub $currentPage 1}}&limit=5" class="previous">Previous</a>
         {{ end }}
     {{ end }}
     {{ range $i := sequence 1 .NumberOfPage }}
@@ -72,9 +72,9 @@
     {{ end }}
     {{ if lt $currentPage .NumberOfPage }}
         {{with $category}}
-            <a href="?category={{toLower $category}}&page={{add $currentPage 1}}&limit=5">Next</a>
+            <a href="?category={{toLower $category}}&page={{add $currentPage 1}}&limit=5" class="next">Next</a>
             {{else}}
-            <a href="/?page={{add $currentPage 1}}&limit=5">Next</a>
+            <a href="/?page={{add $currentPage 1}}&limit=5" class="next">Next</a>
         {{end}}
     {{ end }}
 </div>
