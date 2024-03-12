@@ -3,8 +3,8 @@
 {{define "main"}}
 <div class='snippet'>
     <div class='metadata'>
-        <strong>{{.Post.Title}}</strong>
-        <span>#{{.Post.PostID}}</span>
+        <strong class="postTitle">{{.Post.Title}}</strong>
+        <span class="post-card-Date"><time datetime=""></time>{{humanDate .Post.Created }}</span>
     </div>
     <div class="snippetText"><code>{{.Post.Content}}</code></div>
     <div class='post-footer'>
@@ -30,4 +30,48 @@
             </div>
         </div>   
 </div>
+</div>
+<div class="new-comment">
+
+    <form action="/{{.Post.PostID}}/comment" method="POST" class="comment-form">
+        <input type="text" name="comment" value="" placeholder="Noone wants your comment" class="newcominput">
+        <input type="submit" value="Comment" class="comment-submit">
+    </form>
+</div>
+
+    <h2 class="commenth2">Comments</h2>
+
+<div class="comment-container">
+    <div class="comment">
+        <div class="comment-left">
+            <div class="comment-metadata">
+                <span>Billy</span>
+                <span>12 Feb 2022 at 04:20</span>
+            </div>
+            <div class="comment-body">
+                <code>Wassap Boiis</code>
+            </div>
+        </div>
+        <div class="postReaction">
+            <div class="reactionContainer">
+                <button class="reactionButton">
+                    <img src="/static/img/like.png" class="reactionImg">
+                    <p class="reaction">0</p>
+                </button>
+                
+            </div>
+            <div class="reactionContainer">
+                <button class="reactionButton">
+                    <img src="/static/img/dislike.png" class="reactionImg">
+                    <p class="reaction">0</p>
+                </button>
+                
+            </div>
+        </div>   
+
+        </div>
+   
+</div>
+
+
 {{end}}

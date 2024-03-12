@@ -438,8 +438,8 @@ footer {
 }
 
 .posts-container{
-    overflow-y: scroll;
-    height: min-content;
+    overflow-y: auto;
+    height: 58vh;
     scrollbar-width: none;
 }
 
@@ -469,3 +469,62 @@ footer {
 .previous{
     margin-right: 8px;
 }
+
+.postTitle{
+    color: #62CB31;
+}
+
+.new-comment{
+    margin-top: 30px;
+}
+.comment-submit{
+    margin-top: 0px !important;
+    margin-left: 10px;
+}
+
+.comment-form{
+    display: flex;
+}
+
+.comment-header{
+    padding-left: 10px;
+    margin-bottom: 10px;
+}
+
+.comment{
+    background-color: #FFFFFF;
+    border: 1px solid #E4E5E7;
+    border-radius: 3px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.comment-body{
+
+}
+
+.comment-metadata{
+    color: #6A6C6F;
+    
+}
+
+.comment-metadata span{
+    font-size: 13px;
+}
+
+.comment-container .postReaction{
+    align-items: center;
+    padding-right: 18px;
+}
+
+.comment-left{
+    padding: 15px;
+
+}
+
+.commenth2{
+    margin-top: 30px;
+    margin-bottom: 20px;
+    margin-left: 10px;
+}
+
