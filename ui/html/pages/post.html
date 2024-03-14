@@ -13,29 +13,33 @@
             <p class="categoryFooter">{{$category}}</p>
             {{end}}
         </div>
-        <div class="postReaction">
-            <div class="reactionContainer">
-                <button class="reactionButton">
-                    <img src="/static/img/like.png" class="reactionImg">
-                    <p class="reaction">0</p>
-                </button>
+        <form action="/post/reaction">
+            <div class="postReaction">
+                <div class="reactionContainer">
+                    <button type="submit" class="reactionButton" name="likeButton" value="true">
+                        <input type="hidden" name="postID" value="{{.Post.PostID}}">
+                        <img src="/static/img/like.png" class="reactionImg">
+                        <p class="reaction">0</p>
+                    </button>
                 
-            </div>
-            <div class="reactionContainer">
-                <button class="reactionButton">
-                    <img src="/static/img/dislike.png" class="reactionImg">
-                    <p class="reaction">0</p>
-                </button>
-                
-            </div>
-        </div>   
-</div>
+                </div>
+                <div class="reactionContainer">
+                    <button type="submit" class="reactionButton" name="dislikeButton" value="false">
+                        <input type="hidden" name="postID" value="{{.Post.PostID}}">
+                        <img src="/static/img/dislike.png" class="reactionImg">
+                        <p class="reaction">0</p>
+                    </button>
+                </div>
+            </div>   
+        </form>
+    </div>
 </div>
 <div class="new-comment">
 
-    <form action="/{{.Post.PostID}}/comment" method="POST" class="comment-form">
+    <form action="/comment/post" method="POST" class="comment-form">
         <input type="text" name="comment" value="" placeholder="Noone wants your comment" class="newcominput">
         <input type="submit" value="Comment" class="comment-submit">
+        <input type="hidden" name="postID" value="{{.Post.PostID}}">
     </form>
 </div>
 
@@ -52,25 +56,25 @@
                 <code>Wassap Boiis</code>
             </div>
         </div>
-        <div class="postReaction">
-            <div class="reactionContainer">
-                <button class="reactionButton">
-                    <img src="/static/img/like.png" class="reactionImg">
-                    <p class="reaction">0</p>
-                </button>
-                
+        <form action="/comment/reaction" method="POST">
+            <input type="hidden" name="postID" value="{{.Post.PostID}}">
+            <input type="hidden" name="commentID" value="{{.Comment.CommentID}}">
+            <div class="postReaction">
+                <div class="reactionContainer">
+                    <button class="reactionButton" type="submit" name="likeButton" value="true">
+                        <img src="/static/img/like.png" class="reactionImg">
+                        <p class="reaction">0</p>
+                    </button>
+                </div>
+                <div class="reactionContainer">
+                    <button class="reactionButton" type="submit" name="dislikeButton" value="false">
+                        <img src="/static/img/dislike.png" class="reactionImg">
+                        <p class="reaction">0</p>
+                    </button>
+                </div>
             </div>
-            <div class="reactionContainer">
-                <button class="reactionButton">
-                    <img src="/static/img/dislike.png" class="reactionImg">
-                    <p class="reaction">0</p>
-                </button>
-                
-            </div>
-        </div>   
-
-        </div>
-   
+        </form>   
+    </div>
 </div>
 
 

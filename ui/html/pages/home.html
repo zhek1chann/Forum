@@ -1,19 +1,19 @@
 {{define "title"}}Home {{end}}
 {{define "main"}}
 
-
+{{$isAuth := .IsAuthenticated}}
 <h2>Posts</h2>
 <div class="posts-container">
     {{range .Posts}}
-    <div class="post-card">
-        <div class="card-header">
-            <div class="user-data">
-                <div class="post-card-NameDate">
-                    <p class="post-card-Username">By {{.UserName}}</p>
-                    <span class="post-card-Date"><time datetime=""></time>{{humanDate .Created }}</span>
+        <div class="post-card">
+            <div class="card-header">
+                <div class="user-data">
+                    <div class="post-card-NameDate">
+                        <p class="post-card-Username">By {{.UserName}}</p>
+                        <span class="post-card-Date"><time datetime=""></time>{{humanDate .Created }}</span>
+                    </div>
                 </div>
             </div>
-        </div>
             <div class="content">
                 <div class="title">
                     <a href="post/{{.UserID}}"> {{.Title}} </a>
@@ -25,25 +25,27 @@
             <div class="card-footer">
                 <div class="category-tags-wrapper">
                     {{range $category := .Categories}}
-                    <div class="category-tag">{{$category}}</div>
+                        <div class="category-tag">{{$category}}</div>
                     {{end}}
+                    <form action="/post/reaction" method="POST">
+                        <div class="postReaction">
+                            <div class="reactionContainer">
+                                
+                                <button class="reactionButton" type="submit" name="reaction" value="true">
+                                    <img src="/static/img/like.png" class="reactionImg">
+                                    <p class="reaction">0</p>
+                                    
+                                </button>
+                            </div>
+                            <div class="reactionContainer">
+                                <button class="reactionButton" type="submit" name="reaction" value="false">
+                                    <img src="/static/img/dislike.png" class="reactionImg">
+                                    <p class="reaction">0</p>
+                                </button>
+                            </div>
+                        </div>   
+                    </form>
                 </div>
-                <div class="postReaction">
-                    <div class="reactionContainer">
-                        <button class="reactionButton">
-                            <img src="/static/img/like.png" class="reactionImg">
-                            <p class="reaction">0</p>
-                        </button>
-                        
-                    </div>
-                    <div class="reactionContainer">
-                        <button class="reactionButton">
-                            <img src="/static/img/dislike.png" class="reactionImg">
-                            <p class="reaction">0</p>
-                        </button>
-                        
-                    </div>
-                </div>   
             </div>
         </div>
     {{end}}
