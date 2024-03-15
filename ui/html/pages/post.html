@@ -58,7 +58,7 @@
         </div>
         <form action="/comment/reaction" method="POST">
             <input type="hidden" name="postID" value="{{.Post.PostID}}">
-            <input type="hidden" name="commentID" value="{{.Comment.CommentID}}">
+            <!-- here comment id -->
             <div class="postReaction">
                 <div class="reactionContainer">
                     <button class="reactionButton" type="submit" name="likeButton" value="true">
@@ -79,3 +79,5 @@
 
 
 {{end}}
+
+<!-- <input type="hidden" name="commentID" value="{{.Comment.CommentID}}"> -->

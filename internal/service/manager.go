@@ -13,6 +13,11 @@ type ServiceI interface {
 	UserServiceI
 	CategoryServiceI
 	PostServiceI
+	InteractionServiceI
+}
+
+type InteractionServiceI interface {
+	CommentPost(models.CommentForm) error
 }
 
 type UserServiceI interface {

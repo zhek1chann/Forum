@@ -77,6 +77,7 @@ func (h *handler) postView(w http.ResponseWriter, r *http.Request) {
 
 	data := h.app.NewTemplateData(r)
 	data.Post = post
+	data.Form = models.CommentForm{}
 	data.Categories, err = h.service.GetAllCategory()
 	if err != nil {
 		h.app.ServerError(w, err)

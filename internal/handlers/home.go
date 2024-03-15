@@ -55,7 +55,7 @@ func (h *handler) setUpPage(data *models.TemplateData, r *http.Request) (*models
 	var err error
 	currentPageStr := r.URL.Query().Get("page")
 	data.Category = strings.Title(r.URL.Query().Get("category"))
-	fmt.Print(data.Category)
+	// fmt.Print(data.Category)
 	data.Categories, err = h.service.GetAllCategory()
 	if err != nil {
 		return nil, err

@@ -30,6 +30,13 @@ type Comment struct {
 	DislikeCounter string
 }
 
+type CommentForm struct {
+	PostID  string `form:"PostID"`
+	UserID  string `form:"UserID"`
+	Content string `form:"comment"`
+	validator.Validator
+}
+
 type PostForm struct {
 	Title               string   `form:"title"`
 	Content             string   `form:"content"`
