@@ -68,14 +68,14 @@ func (s *Sqlite) CheckReactionPost(form models.PostReactionForm) (bool, bool, er
 		return false, false, err
 	}
 	var dbLike bool
-	if isExists{
+	if isExists {
 		checkQuery = `SELECT is_like FROM Post_User_Like WHERE user_id = ? AND post_id = ?`
 		err = s.db.QueryRow(checkQuery, form.UserID, form.PostID).Scan(&dbLike)
 		if err != nil {
 			return false, false, err
 		}
 	}
-	
+
 	return isExists, dbLike, nil
 }
 
@@ -108,7 +108,7 @@ func (s *Sqlite) AddReactionPost(form models.PostReactionForm) error {
 	return tx.Commit()
 }
 
-func (s *Sqlite) DeleteReactionPost(form models.PostReactionForm) error {
+func (s *Sqlite) DeleteReactionPost(form models.PostReactionForm, isLike bool) error {
 	tx, err := s.db.Begin()
 	if err != nil {
 		fmt.Println("here")
@@ -125,7 +125,7 @@ func (s *Sqlite) DeleteReactionPost(form models.PostReactionForm) error {
 
 	// decrement the like or dislike
 	updateQuery := ""
-	if !form.Reaction {
+	if isLike {
 		updateQuery = `UPDATE Posts SET like = like - 1 WHERE id = ? AND like > 0`
 	} else {
 		updateQuery = `UPDATE Posts SET dislike = dislike - 1  WHERE id = ? AND dislike > 0`
