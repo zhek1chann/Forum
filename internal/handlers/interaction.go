@@ -1,15 +1,16 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"forum/models"
 	"forum/pkg/cookie"
 	"forum/pkg/validator"
 	"net/http"
+	"strconv"
 )
 
 func (h *handler) postReaction(w http.ResponseWriter, r *http.Request) {
-	fmt.Print(r.Method)
 	if r.Method != http.MethodPost {
 		h.app.ClientError(w, http.StatusBadRequest)
 		return
@@ -19,20 +20,33 @@ func (h *handler) postReaction(w http.ResponseWriter, r *http.Request) {
 		h.app.ServerError(w, err)
 		return
 	}
+	url := r.FormValue("url")
+	token := cookie.GetSessionCookie(r)
+	form := models.PostReactionForm{
+		PostID: r.FormValue("postID"),
+		UserID: token.Value,
+	}
 	reaction := r.FormValue("reaction")
+
 	switch reaction {
 	case "true":
-		fmt.Println("true")
+		form.Reaction = true
 	case "false":
-		fmt.Println("false")
+		form.Reaction = false
 	default:
 		h.app.ClientError(w, http.StatusBadRequest)
+		return
 	}
+	err := h.service.PostReaction(form)
+	if err != nil {
+		h.app.ServerError(w, err)
+		return
+	}
+	http.Redirect(w, r, fmt.Sprintf(url), http.StatusSeeOther)
 }
 
 func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 	var err error
-	fmt.Print(r.Method)
 	if r.Method != http.MethodPost {
 		h.app.ClientError(w, http.StatusBadRequest)
 		return
@@ -55,11 +69,30 @@ func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			h.app.ServerError(w, err)
 		}
+		id, err := strconv.Atoi(form.PostID)
+		if err!=nil{
+			h.app.ServerError(w, err)
+			return
+		}
+		post, err := h.service.GetPostByID(id)
+		if err != nil {
+			if errors.Is(err, models.ErrNoRecord) {
+				h.app.ClientError(w, 404)
+				return
+			} else {
+				h.app.ServerError(w, err)
+				return
+			}
+		}
+		data.Post = post
 		h.app.Render(w, http.StatusUnprocessableEntity, "post.html", data)
+		return
 	}
+
 	err = h.service.CommentPost(form)
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
 	}
-	http.Redirect(w, r, fmt.Sprintf("/post/%d", form.PostID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/post/%s", form.PostID), http.StatusSeeOther)
 }

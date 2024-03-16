@@ -58,65 +58,66 @@ func (s *Sqlite) GetAllPost() ([]models.Post, error) {
 	return posts, nil
 }
 
-func (s *Sqlite) AddLikeAndDislike(isLike bool, userID, postID string) error {
-	tx, err := s.db.Begin()
-	if err != nil {
-		return err
-	}
+func (s *Sqlite) CheckReactionPost(form models.PostReactionForm) (bool, bool, error) {
 
 	// Check if the user has already liked/disliked the post
 	var isExists bool
-	checkQuery := `SELECT EXISTS(SELECT 1 FROM Post_User_Like WHERE user_id = ? AND post_id = ?)`
-	err = tx.QueryRow(checkQuery, userID, postID).Scan(&isExists)
+	checkQuery := `SELECT EXISTS(SELECT is_like FROM Post_User_Like WHERE user_id = ? AND post_id = ?)`
+	err := s.db.QueryRow(checkQuery, form.UserID, form.PostID).Scan(&isExists)
 	if err != nil {
-		tx.Rollback()
-		return err
+		return false, false, err
 	}
-
-	if !isExists {
-		// Insert like/dislike
-		insertQuery := `INSERT INTO Post_User_Like (user_id, post_id, is_like) VALUES (?, ?, ?)`
-		_, err := tx.Exec(insertQuery, userID, postID, isLike)
+	var dbLike bool
+	if isExists{
+		checkQuery = `SELECT is_like FROM Post_User_Like WHERE user_id = ? AND post_id = ?`
+		err = s.db.QueryRow(checkQuery, form.UserID, form.PostID).Scan(&dbLike)
 		if err != nil {
-			tx.Rollback()
-			return err
-		}
-
-		// Update Post like/dislike count
-		updateQuery := ""
-		if isLike {
-			updateQuery = `UPDATE Post SET like = like + 1 WHERE post_id = ?`
-		} else {
-			updateQuery = `UPDATE Post SET dislike = dislike + 1 WHERE post_id = ?`
-		}
-		_, err = tx.Exec(updateQuery, postID)
-		if err != nil {
-			tx.Rollback()
-			return err
+			return false, false, err
 		}
 	}
-
-	return tx.Commit()
+	
+	return isExists, dbLike, nil
 }
 
-func (s *Sqlite) DeleteLikeAndDislike(userID, postID int) error {
+func (s *Sqlite) AddReactionPost(form models.PostReactionForm) error {
 	tx, err := s.db.Begin()
 	if err != nil {
 		return err
 	}
 
-	// is user liked or disliked
-	var isLike bool
-	checkQuery := `SELECT is_like FROM Post_User_Like WHERE user_id = ? AND post_id = ?`
-	err = tx.QueryRow(checkQuery, userID, postID).Scan(&isLike)
+	// Insert like/dislike
+	insertQuery := `INSERT INTO Post_User_Like (user_id, post_id, is_like) VALUES (?, ?, ?)`
+	_, err = tx.Exec(insertQuery, form.UserID, form.PostID, form.Reaction)
 	if err != nil {
 		tx.Rollback()
+		return err
+	}
+
+	// Update Post like/dislike count
+	updateQuery := ""
+	if form.Reaction {
+		updateQuery = `UPDATE Posts SET like = like + 1 WHERE id = ?`
+	} else {
+		updateQuery = `UPDATE Posts SET dislike = dislike + 1 WHERE id = ?`
+	}
+	_, err = tx.Exec(updateQuery, form.PostID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
+}
+
+func (s *Sqlite) DeleteReactionPost(form models.PostReactionForm) error {
+	tx, err := s.db.Begin()
+	if err != nil {
+		fmt.Println("here")
 		return err
 	}
 
 	// delete the like/dislike
 	deleteQuery := `DELETE FROM Post_User_Like WHERE user_id = ? AND post_id = ?`
-	_, err = tx.Exec(deleteQuery, userID, postID)
+	_, err = tx.Exec(deleteQuery, form.UserID, form.PostID)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -124,12 +125,12 @@ func (s *Sqlite) DeleteLikeAndDislike(userID, postID int) error {
 
 	// decrement the like or dislike
 	updateQuery := ""
-	if isLike {
-		updateQuery = `UPDATE Post SET like = like - 1 WHERE post_id = ? AND like > 0`
+	if !form.Reaction {
+		updateQuery = `UPDATE Posts SET like = like - 1 WHERE id = ? AND like > 0`
 	} else {
-		updateQuery = `UPDATE Post SET dislike = dislike - 1 WHERE post_id = ? AND dislike > 0`
+		updateQuery = `UPDATE Posts SET dislike = dislike - 1  WHERE id = ? AND dislike > 0`
 	}
-	_, err = tx.Exec(updateQuery, postID)
+	_, err = tx.Exec(updateQuery, form.PostID)
 	if err != nil {
 		tx.Rollback()
 		return err

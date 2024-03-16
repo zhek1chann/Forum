@@ -13,21 +13,20 @@
             <p class="categoryFooter">{{$category}}</p>
             {{end}}
         </div>
-        <form action="/post/reaction">
+        <form action="/post/reaction" method="POST">
+            <input type="hidden" name="postID" value="{{.Post.PostID}}">
+            <input type="hidden" name="url" value="/post/{{.Post.PostID}}">
             <div class="postReaction">
                 <div class="reactionContainer">
-                    <button type="submit" class="reactionButton" name="likeButton" value="true">
-                        <input type="hidden" name="postID" value="{{.Post.PostID}}">
+                    <button type="submit" class="reactionButton" name="reaction" value="true">
                         <img src="/static/img/like.png" class="reactionImg">
-                        <p class="reaction">0</p>
+                        <p class="reaction">{{.Post.Like}}</p>
                     </button>
-                
                 </div>
                 <div class="reactionContainer">
-                    <button type="submit" class="reactionButton" name="dislikeButton" value="false">
-                        <input type="hidden" name="postID" value="{{.Post.PostID}}">
+                    <button type="submit" class="reactionButton" name="reaction" value="false">
                         <img src="/static/img/dislike.png" class="reactionImg">
-                        <p class="reaction">0</p>
+                        <p class="reaction">{{.Post.Dislike}}</p>
                     </button>
                 </div>
             </div>   
@@ -37,7 +36,10 @@
 <div class="new-comment">
 
     <form action="/comment/post" method="POST" class="comment-form">
-        <input type="text" name="comment" value="" placeholder="Noone wants your comment" class="newcominput">
+        {{with .Form.FieldErrors.comment}}
+        <label class="error">{{.}}</label>
+        {{end}}
+        <input type="text" name="comment" placeholder="Noone wants your comment" class="newcominput">
         <input type="submit" value="Comment" class="comment-submit">
         <input type="hidden" name="postID" value="{{.Post.PostID}}">
     </form>

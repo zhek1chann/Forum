@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"errors"
-	"fmt"
 	"forum/models"
 	"net/http"
 	"strconv"

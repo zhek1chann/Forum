@@ -1,6 +1,8 @@
 package sqlite
 
-func (s *Sqlite) CreateComment() error {
+import "forum/models"
+
+func (s *Sqlite) CommentPost(form models.CommentForm) error {
 	return nil
 }
 

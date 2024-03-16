@@ -31,10 +31,16 @@ type Comment struct {
 }
 
 type CommentForm struct {
-	PostID  string `form:"PostID"`
-	UserID  string `form:"UserID"`
-	Content string `form:"comment"`
+	PostID  string 
+	UserID  string 
+	Content string 
 	validator.Validator
+}
+
+type PostReactionForm struct{
+	PostID string
+	UserID string
+	Reaction bool
 }
 
 type PostForm struct {

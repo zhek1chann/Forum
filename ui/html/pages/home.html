@@ -16,7 +16,7 @@
             </div>
             <div class="content">
                 <div class="title">
-                    <a href="post/{{.UserID}}"> {{.Title}} </a>
+                    <a href="post/{{.PostID}}"> {{.Title}} </a>
                 </div>
                 <div class="desc">
                     {{.Content}}
@@ -28,19 +28,21 @@
                         <div class="category-tag">{{$category}}</div>
                     {{end}}
                     <form action="/post/reaction" method="POST">
+                        <input type="hidden" name="postID" value="{{.PostID}}">
+                        <input type="hidden" name="url" value="/">
                         <div class="postReaction">
                             <div class="reactionContainer">
                                 
                                 <button class="reactionButton" type="submit" name="reaction" value="true">
                                     <img src="/static/img/like.png" class="reactionImg">
-                                    <p class="reaction">0</p>
+                                    <p class="reaction">{{.Like}}</p>
                                     
                                 </button>
                             </div>
                             <div class="reactionContainer">
                                 <button class="reactionButton" type="submit" name="reaction" value="false">
                                     <img src="/static/img/dislike.png" class="reactionImg">
-                                    <p class="reaction">0</p>
+                                    <p class="reaction">{{.Dislike}}</p>
                                 </button>
                             </div>
                         </div>   
