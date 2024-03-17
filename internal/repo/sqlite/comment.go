@@ -16,7 +16,10 @@ func (s *Sqlite) CommentPost(form models.CommentForm) error {
 }
 
 func (s *Sqlite) GetCommentsByPostID(postID string) (*[]models.Comment, error) {
-	const query = `SELECT id, post_id, user_id, created, content, like, dislike FROM Comments WHERE post_id = ?`
+	const query = `SELECT c.id, c.post_id, c.user_id, c.created, c.content, c.like, c.dislike, u.name 
+	FROM comments c 
+	JOIN users u ON c.user_id = u.id 
+	WHERE c.id = ?`
 	rows, err := s.db.Query(query, postID)
 	if err != nil {
 		return nil, err
@@ -26,7 +29,7 @@ func (s *Sqlite) GetCommentsByPostID(postID string) (*[]models.Comment, error) {
 	var comments []models.Comment
 	for rows.Next() {
 		var comment models.Comment
-		err := rows.Scan(&comment.CommentID, &comment.PostID, &comment.UserID, &comment.Created, &comment.Content, &comment.Like, &comment.Dislike)
+		err := rows.Scan(&comment.CommentID, &comment.PostID, &comment.UserID, &comment.Created, &comment.Content, &comment.Like, &comment.Dislike, &comment.UserName)
 		if err != nil {
 			return nil, err
 		}
