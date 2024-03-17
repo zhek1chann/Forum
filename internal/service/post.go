@@ -1,8 +1,8 @@
 package service
 
 import (
-	"fmt"
 	"forum/models"
+	"strconv"
 )
 
 func (s *service) CreatePost(title, content, token string, categories []int) (int, error) {
@@ -33,6 +33,13 @@ func (s *service) GetPostByID(id int) (*models.Post, error) {
 		return nil, err
 	}
 	post.Categories = categories
+	post.Comment, err = s.repo.GetCommentsByPostID(strconv.Itoa(id))
+	if err != nil {
+		return nil, err
+	}
+
+	// exists, isLike, err:=s.repo.CheckReactionPost(models.PostReactionForm{PostID: strconv.Itoa(id),UserID: })
+	// return post, nil
 	return post, nil
 }
 
@@ -63,10 +70,8 @@ func (s *service) GetPageNumber(pageSize int, category int) (int, error) {
 }
 
 func (s *service) GetAllPostByCategory(category int) (*[]models.Post, error) {
-	// fmt.Println(AddCategory(category))
 	posts, err := s.repo.GetAllPostByCategory(category)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	return posts, nil

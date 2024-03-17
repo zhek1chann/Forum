@@ -18,28 +18,30 @@ type Post struct {
 	Dislike    int
 	Comment    *[]Comment
 	Categories map[int]string
+	isLiked    bool
 }
 
 type Comment struct {
-	CommentId      int
-	PostID         int
-	CreatedUserID  int
-	Content        string
-	CreatedTime    time.Time
-	LikeCounter    string
-	DislikeCounter string
+	CommentID int
+	PostID    int
+	UserID    int
+	UserName string
+	Content   string
+	Created   time.Time
+	Like      string
+	Dislike   string
 }
 
 type CommentForm struct {
-	PostID  string 
-	UserID  string 
-	Content string 
+	PostID  string
+	UserID  string
+	Content string
 	validator.Validator
 }
 
-type PostReactionForm struct{
-	PostID string
-	UserID string
+type ReactionForm struct {
+	ID   string
+	UserID   string
 	Reaction bool
 }
 

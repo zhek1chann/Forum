@@ -26,9 +26,9 @@ type PostRepo interface {
 	GetCategoriesByPostID(int) (map[int]string, error)
 	// GetAllPost() (*models.Post, error)
 	// UpdatePost(string, *models.Post) error
-	AddReactionPost(form models.PostReactionForm) error
-	DeleteReactionPost(form models.PostReactionForm, isLike bool) error
-	CheckReactionPost(form models.PostReactionForm) (bool, bool, error)
+	AddReactionPost(form models.ReactionForm) error
+	DeleteReactionPost(form models.ReactionForm, isLike bool) error
+	CheckReactionPost(form models.ReactionForm) (bool, bool, error)
 	GetAllPostByUserID(int) (*[]models.Post, error)
 	GetAllPostByCategory(category int) (*[]models.Post, error)
 	GetPageNumber(pageSize int, category int) (int, error)
@@ -44,9 +44,11 @@ type CategoryRepo interface {
 
 type CommentRepo interface {
 	CommentPost(models.CommentForm) error
-	// 	GetAllCommentByPostID(string) (*[]models.Post, error)
+	GetCommentsByPostID(postID string) (*[]models.Comment, error)
 	// 	GetAllCommentByUserID(string) (*[]models.Post, error)
-	// 	AddLikeAndDislike(bool, string, string) error
+	CheckReactionComment(form models.ReactionForm) (bool, bool, error)
+	AddReactionComment(form models.ReactionForm) error
+	DeleteReactionComment(form models.ReactionForm, isLike bool) error 
 }
 
 type RepoI interface {

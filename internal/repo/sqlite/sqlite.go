@@ -74,6 +74,14 @@ func NewDB(storagePath string) (*Sqlite, error) {
 			FOREIGN KEY (post_id) REFERENCES posts(post_id),
 			FOREIGN KEY (user_id) REFERENCES users(user_id)
 		);`,
+		`CREATE TABLE IF NOT EXISTS comment_user_Like (
+			user_id INTEGER,
+			comment_id INTEGER,
+			is_like BOOLEAN,
+			PRIMARY KEY (user_id, comment_id),
+			FOREIGN KEY (user_id) REFERENCES users(user_id),
+			FOREIGN KEY (comment_id) REFERENCES comments(comment_id)
+		);`,
 	}
 
 	for _, query := range tableCreationQueries {

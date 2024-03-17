@@ -48,35 +48,38 @@
     <h2 class="commenth2">Comments</h2>
 
 <div class="comment-container">
+    {{range .Post.Comment}}
     <div class="comment">
         <div class="comment-left">
             <div class="comment-metadata">
-                <span>Billy</span>
-                <span>12 Feb 2022 at 04:20</span>
+                <span>{{.UserID}}</span>
+                <span>{{humanDate .Created}}</span>
             </div>
             <div class="comment-body">
-                <code>Wassap Boiis</code>
+                <code>{{.Content}}</code>
             </div>
         </div>
         <form action="/comment/reaction" method="POST">
-            <input type="hidden" name="postID" value="{{.Post.PostID}}">
+            <input type="hidden" name="commentID" value="{{.CommentID}}">
+            <input type="hidden" name="postID" value="{{.PostID}}">
             <!-- here comment id -->
             <div class="postReaction">
                 <div class="reactionContainer">
-                    <button class="reactionButton" type="submit" name="likeButton" value="true">
+                    <button class="reactionButton" type="submit" name="reaction" value="true">
                         <img src="/static/img/like.png" class="reactionImg">
-                        <p class="reaction">0</p>
+                        <p class="reaction">{{.Like}}</p>
                     </button>
                 </div>
                 <div class="reactionContainer">
-                    <button class="reactionButton" type="submit" name="dislikeButton" value="false">
+                    <button class="reactionButton" type="submit" name="reaction" value="false">
                         <img src="/static/img/dislike.png" class="reactionImg">
-                        <p class="reaction">0</p>
+                        <p class="reaction">{{.Dislike}}</p>
                     </button>
                 </div>
             </div>
         </form>   
     </div>
+    {{end}}
 </div>
 
 

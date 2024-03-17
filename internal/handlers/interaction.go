@@ -22,8 +22,8 @@ func (h *handler) postReaction(w http.ResponseWriter, r *http.Request) {
 	}
 	url := r.FormValue("url")
 	token := cookie.GetSessionCookie(r)
-	form := models.PostReactionForm{
-		PostID: r.FormValue("postID"),
+	form := models.ReactionForm{
+		ID: r.FormValue("postID"),
 		UserID: token.Value,
 	}
 	reaction := r.FormValue("reaction")
@@ -70,7 +70,7 @@ func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 			h.app.ServerError(w, err)
 		}
 		id, err := strconv.Atoi(form.PostID)
-		if err!=nil{
+		if err != nil {
 			h.app.ServerError(w, err)
 			return
 		}
@@ -95,4 +95,39 @@ func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.Redirect(w, r, fmt.Sprintf("/post/%s", form.PostID), http.StatusSeeOther)
+}
+
+func (h *handler) commentReaction(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		h.app.ClientError(w, http.StatusBadRequest)
+		return
+	}
+
+	if err := r.ParseForm(); err != nil {
+		h.app.ServerError(w, err)
+		return
+	}
+	postId:=r.FormValue("postID")
+	token := cookie.GetSessionCookie(r)
+	form := models.ReactionForm{
+		ID: r.FormValue("commentID"),
+		UserID: token.Value,
+	}
+	reaction := r.FormValue("reaction")
+
+	switch reaction {
+	case "true":
+		form.Reaction = true
+	case "false":
+		form.Reaction = false
+	default:
+		h.app.ClientError(w, http.StatusBadRequest)
+		return
+	}
+	err := h.service.CommentReaction(form)
+	if err != nil {
+		h.app.ServerError(w, err)
+		return
+	}
+	http.Redirect(w, r, fmt.Sprintf("/post/%s", postId), http.StatusSeeOther)
 }

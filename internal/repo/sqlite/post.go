@@ -58,19 +58,19 @@ func (s *Sqlite) GetAllPost() ([]models.Post, error) {
 	return posts, nil
 }
 
-func (s *Sqlite) CheckReactionPost(form models.PostReactionForm) (bool, bool, error) {
+func (s *Sqlite) CheckReactionPost(form models.ReactionForm) (bool, bool, error) {
 
 	// Check if the user has already liked/disliked the post
 	var isExists bool
 	checkQuery := `SELECT EXISTS(SELECT is_like FROM Post_User_Like WHERE user_id = ? AND post_id = ?)`
-	err := s.db.QueryRow(checkQuery, form.UserID, form.PostID).Scan(&isExists)
+	err := s.db.QueryRow(checkQuery, form.UserID, form.ID).Scan(&isExists)
 	if err != nil {
 		return false, false, err
 	}
 	var dbLike bool
 	if isExists {
 		checkQuery = `SELECT is_like FROM Post_User_Like WHERE user_id = ? AND post_id = ?`
-		err = s.db.QueryRow(checkQuery, form.UserID, form.PostID).Scan(&dbLike)
+		err = s.db.QueryRow(checkQuery, form.UserID, form.ID).Scan(&dbLike)
 		if err != nil {
 			return false, false, err
 		}
@@ -79,7 +79,7 @@ func (s *Sqlite) CheckReactionPost(form models.PostReactionForm) (bool, bool, er
 	return isExists, dbLike, nil
 }
 
-func (s *Sqlite) AddReactionPost(form models.PostReactionForm) error {
+func (s *Sqlite) AddReactionPost(form models.ReactionForm) error {
 	tx, err := s.db.Begin()
 	if err != nil {
 		return err
@@ -87,7 +87,7 @@ func (s *Sqlite) AddReactionPost(form models.PostReactionForm) error {
 
 	// Insert like/dislike
 	insertQuery := `INSERT INTO Post_User_Like (user_id, post_id, is_like) VALUES (?, ?, ?)`
-	_, err = tx.Exec(insertQuery, form.UserID, form.PostID, form.Reaction)
+	_, err = tx.Exec(insertQuery, form.UserID, form.ID, form.Reaction)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -100,7 +100,7 @@ func (s *Sqlite) AddReactionPost(form models.PostReactionForm) error {
 	} else {
 		updateQuery = `UPDATE Posts SET dislike = dislike + 1 WHERE id = ?`
 	}
-	_, err = tx.Exec(updateQuery, form.PostID)
+	_, err = tx.Exec(updateQuery, form.ID)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -108,7 +108,7 @@ func (s *Sqlite) AddReactionPost(form models.PostReactionForm) error {
 	return tx.Commit()
 }
 
-func (s *Sqlite) DeleteReactionPost(form models.PostReactionForm, isLike bool) error {
+func (s *Sqlite) DeleteReactionPost(form models.ReactionForm, isLike bool) error {
 	tx, err := s.db.Begin()
 	if err != nil {
 		fmt.Println("here")
@@ -117,7 +117,7 @@ func (s *Sqlite) DeleteReactionPost(form models.PostReactionForm, isLike bool) e
 
 	// delete the like/dislike
 	deleteQuery := `DELETE FROM Post_User_Like WHERE user_id = ? AND post_id = ?`
-	_, err = tx.Exec(deleteQuery, form.UserID, form.PostID)
+	_, err = tx.Exec(deleteQuery, form.UserID, form.ID)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -130,7 +130,7 @@ func (s *Sqlite) DeleteReactionPost(form models.PostReactionForm, isLike bool) e
 	} else {
 		updateQuery = `UPDATE Posts SET dislike = dislike - 1  WHERE id = ? AND dislike > 0`
 	}
-	_, err = tx.Exec(updateQuery, form.PostID)
+	_, err = tx.Exec(updateQuery, form.ID)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -180,7 +180,6 @@ func (s *Sqlite) GetAllPostByCategory(categoryID int) (*[]models.Post, error) {
 		if err := rows.Scan(&post.PostID, &post.UserID, &post.Title, &post.Content, &post.Created, &post.Like, &post.Dislike, &post.ImageName); err != nil {
 			return nil, err
 		}
-		fmt.Println(post)
 		posts = append(posts, post)
 	}
 
@@ -210,7 +209,6 @@ func (s *Sqlite) GetAllPostByCategoryPaginated(page int, pageSize int, categoryI
 			return nil, err
 		}
 		posts = append(posts, post)
-		fmt.Println(post)
 	}
 
 	return &posts, nil
@@ -254,7 +252,6 @@ func (s *Sqlite) GetPageNumber(pageSize int, category int) (int, error) {
 			WHERE pc.category_id = (?)
 			`
 		err := s.db.QueryRow(stmt, category).Scan(&totalPosts)
-		fmt.Println(totalPosts)
 		if err != nil {
 			return 0, fmt.Errorf("%s: %w", op, err)
 		}

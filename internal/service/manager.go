@@ -18,7 +18,8 @@ type ServiceI interface {
 
 type InteractionServiceI interface {
 	CommentPost(models.CommentForm) error
-	PostReaction(models.PostReactionForm)error
+	PostReaction(models.ReactionForm)error
+	CommentReaction(models.ReactionForm)error
 }
 
 type UserServiceI interface {
