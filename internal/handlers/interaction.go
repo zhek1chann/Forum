@@ -8,6 +8,7 @@ import (
 	"forum/pkg/validator"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func (h *handler) postReaction(w http.ResponseWriter, r *http.Request) {
@@ -20,10 +21,10 @@ func (h *handler) postReaction(w http.ResponseWriter, r *http.Request) {
 		h.app.ServerError(w, err)
 		return
 	}
-	url := r.FormValue("url")
+	url := strings.TrimPrefix(r.Header.Get("Referer"), r.Header.Get("Origin"))
 	token := cookie.GetSessionCookie(r)
 	form := models.ReactionForm{
-		ID: r.FormValue("postID"),
+		ID:     r.FormValue("postID"),
 		UserID: token.Value,
 	}
 	reaction := r.FormValue("reaction")
@@ -42,7 +43,7 @@ func (h *handler) postReaction(w http.ResponseWriter, r *http.Request) {
 		h.app.ServerError(w, err)
 		return
 	}
-	http.Redirect(w, r, fmt.Sprintf(url), http.StatusSeeOther)
+	http.Redirect(w, r, url, http.StatusSeeOther)
 }
 
 func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
@@ -107,10 +108,10 @@ func (h *handler) commentReaction(w http.ResponseWriter, r *http.Request) {
 		h.app.ServerError(w, err)
 		return
 	}
-	postId:=r.FormValue("postID")
+	postId := r.FormValue("postID")
 	token := cookie.GetSessionCookie(r)
 	form := models.ReactionForm{
-		ID: r.FormValue("commentID"),
+		ID:     r.FormValue("commentID"),
 		UserID: token.Value,
 	}
 	reaction := r.FormValue("reaction")

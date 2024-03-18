@@ -19,7 +19,7 @@ func (s *Sqlite) GetCommentsByPostID(postID string) (*[]models.Comment, error) {
 	const query = `SELECT c.id, c.post_id, c.user_id, c.created, c.content, c.like, c.dislike, u.name 
 	FROM comments c 
 	JOIN users u ON c.user_id = u.id 
-	WHERE c.id = ?`
+	WHERE c.post_id = ?`
 	rows, err := s.db.Query(query, postID)
 	if err != nil {
 		return nil, err
@@ -41,7 +41,6 @@ func (s *Sqlite) GetCommentsByPostID(postID string) (*[]models.Comment, error) {
 // like system
 
 func (s *Sqlite) CheckReactionComment(form models.ReactionForm) (bool, bool, error) {
-
 	// Check if the user has already liked/disliked the post
 	var isExists bool
 	checkQuery := `SELECT EXISTS(SELECT is_like FROM Comment_User_Like WHERE user_id = ? AND comment_id = ?)`

@@ -39,7 +39,6 @@ func (h *handler) home(w http.ResponseWriter, r *http.Request) {
 			h.app.ServerError(w, err)
 			return
 		}
-
 		data.Posts = posts
 		// for _, value := range *posts {
 		// 	fmt.Println(value)
