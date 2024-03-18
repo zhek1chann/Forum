@@ -2,7 +2,7 @@
 {{define "main"}}
 
 {{$isAuth := .IsAuthenticated}}
-<h2>Posts</h2>
+<!-- <h2 class="headerPosts">Posts</h2> -->
 <div class="posts-container">
     {{range .Posts}}
         <div class="post-card">
@@ -27,6 +27,7 @@
                     {{range $category := .Categories}}
                         <div class="category-tag">{{$category}}</div>
                     {{end}}
+                </div>
                     <form action="/post/reaction" method="POST">
                         <input type="hidden" name="postID" value="{{.PostID}}">
                         <input type="hidden" name="url" value="/">
@@ -47,7 +48,6 @@
                             </div>
                         </div>   
                     </form>
-                </div>
             </div>
         </div>
     {{end}}
