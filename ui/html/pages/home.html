@@ -25,7 +25,7 @@
             <div class="card-footer">
                 <div class="category-tags-wrapper">
                     {{range $category := .Categories}}
-                        <div class="category-tag">{{$category}}</div>
+                        <p class="category-tag">{{$category}}</p>
                     {{end}}
                 </div>
                     <form action="/post/reaction" method="POST">

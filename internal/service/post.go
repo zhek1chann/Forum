@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"forum/models"
 	"strconv"
 )
@@ -33,9 +34,14 @@ func (s *service) GetPostByID(id int) (*models.Post, error) {
 		return nil, err
 	}
 	post.Categories = categories
-	post.Comment, err = s.repo.GetCommentsByPostID(strconv.Itoa(id))
+
+	comment, err := s.repo.GetCommentsByPostID(strconv.Itoa(id))
 	if err != nil {
 		return nil, err
+	}
+	if *comment != nil {
+		post.Comment = comment
+		fmt.Print(len(*comment))
 	}
 
 	// exists, isLike, err:=s.repo.CheckReactionPost(models.PostReactionForm{PostID: strconv.Itoa(id),UserID: })

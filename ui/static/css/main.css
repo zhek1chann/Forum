@@ -204,7 +204,10 @@ button:hover {
     color: #6A6C6F;
     padding: 0.75em 18px;
     overflow: auto;
-}
+    display: flex;
+    justify-content: space-between;
+  }    
+
 
 .snippet .metadata span {
     float: right;
@@ -316,6 +319,7 @@ footer {
     margin-bottom: 20px;
     overflow-y: auto;
     height: 100%;
+    margin-bottom: 200px;
 }
 
 .post-card{
@@ -362,19 +366,17 @@ footer {
 }
 
 .post-card .card-footer{
-    display: flex;
-    justify-content: space-between;
-}
-
-.post-card .card-footer{
-    display: flex;
+    display: grid;
     align-items: center;
     gap: 10px;
+    justify-content: space-between;
+    grid-auto-flow: column;
 }
 
 .category-tags-wrapper{
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .category-tag{
@@ -409,6 +411,7 @@ footer {
     text-align: center;
     font-size: 13px;
     gap: 30px;
+    margin-bottom: 0;
 }
 .reaction{
     float: right;
@@ -496,21 +499,24 @@ footer {
     background-color: #FFFFFF;
     border: 1px solid #E4E5E7;
     border-radius: 3px;
-    display: flex;
+    display: grid;
     justify-content: space-between;
+    margin-bottom: 10px;
+    grid-auto-flow: column;
 }
 
 .comment-body{
-
+    word-wrap: anywhere;
 }
 
 .comment-metadata{
     color: #6A6C6F;
+    display: flex;
     
 }
 
 .comment-metadata span{
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .comment-container .postReaction{
@@ -539,10 +545,25 @@ footer {
     bottom: 60px;
     width: 100%;
     display: block;
-    padding: 12px 0 0;
+    padding: 20px 0 80px;
     background-color: #F1F3F6;
   }
 
+  .reactionContainer{
+    margin-bottom: 0;
+  }
+
+  .namedate{
+    display: flex;
+  }
+
+  .reactionForm{
+    align-self: center;
+  }
+
+  .comment-container{
+    margin-bottom: 100px;
+  }
 
   @media screen and (max-width: 2500px) {
       .left{
@@ -571,5 +592,11 @@ footer {
 @media screen and (max-width: 1250px) {
     main{
         max-width: 600px;
+    }
+
+    .post-footer{
+        padding: 0.75em 18px;
+        display: grid;
+        grid-auto-flow: column;
     }
 }
