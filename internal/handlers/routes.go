@@ -15,14 +15,14 @@ func (h *handler) Routes() http.Handler {
 
 	mux.HandleFunc("/", h.home)
 	mux.HandleFunc("/post/", h.postView)
-	mux.HandleFunc("/post/create", h.postCreate)
+	mux.HandleFunc("/post/create",  h.requireAuthentication(h.postCreate))
 	mux.HandleFunc("/login", h.login)
 	mux.HandleFunc("/signup", h.signup)
 	mux.HandleFunc("/logout", h.logoutPost)
 	mux.HandleFunc("/user/posts", h.PostByUser)
-	mux.HandleFunc("/post/reaction", h.postReaction)
-	mux.HandleFunc("/comment/post", h.commentPost)
-	mux.HandleFunc("/comment/reaction", h.commentReaction)
+	mux.HandleFunc("/post/reaction", h.requireAuthentication(h.postReaction))
+	mux.HandleFunc("/comment/post", h.requireAuthentication( h.commentPost))
+	mux.HandleFunc("/comment/reaction",  h.requireAuthentication(h.commentReaction))
 
 	return mux
 }
