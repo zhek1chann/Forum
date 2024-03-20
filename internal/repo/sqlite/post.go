@@ -63,7 +63,6 @@ func (s *Sqlite) GetAllPost() ([]models.Post, error) {
 }
 
 func (s *Sqlite) CheckReactionPost(form models.ReactionForm) (bool, bool, error) {
-
 	// Check if the user has already liked/disliked the post
 	var isExists bool
 	checkQuery := `SELECT EXISTS(SELECT is_like FROM Post_User_Like WHERE user_id = ? AND post_id = ?)`
@@ -243,6 +242,7 @@ func (s *Sqlite) GetAllPostPaginated(page int, pageSize int) (*[]models.Post, er
 	}
 	return &posts, nil
 }
+
 func (s *Sqlite) GetPageNumber(pageSize int, category int) (int, error) {
 	var totalPosts int
 	op := "sqlite.GetPageNumber"
@@ -268,4 +268,27 @@ func (s *Sqlite) GetPageNumber(pageSize int, category int) (int, error) {
 	totalPages := (totalPosts + pageSize - 1) / pageSize
 
 	return totalPages, nil
+}
+
+func (s *Sqlite) GetReactionPost(userID string) (map[int]bool, error) {
+	op := "sqlite.GetReactionPost"
+
+	stmt := `SELECT post_id, is_like FROM Post_User_Like WHERE user_id = ?`
+
+	rows, err := s.db.Query(stmt, userID)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	defer rows.Close()
+
+	reactions := make(map[int]bool)
+	for rows.Next() {
+		var post int
+		var react bool
+		if err := rows.Scan(&post, &react); err != nil {
+			return nil, fmt.Errorf("%s: %w", op, err)
+		}
+		reactions[post] = react
+	}
+	return reactions, nil
 }

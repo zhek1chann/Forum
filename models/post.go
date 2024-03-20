@@ -18,14 +18,14 @@ type Post struct {
 	Dislike    int
 	Comment    *[]Comment
 	Categories map[int]string
-	isLiked    bool
+	IsLiked    int
 }
 
 type Comment struct {
 	CommentID int
 	PostID    int
 	UserID    int
-	UserName string
+	UserName  string
 	Content   string
 	Created   time.Time
 	Like      string
@@ -40,7 +40,7 @@ type CommentForm struct {
 }
 
 type ReactionForm struct {
-	ID   string
+	ID       string
 	UserID   string
 	Reaction bool
 }

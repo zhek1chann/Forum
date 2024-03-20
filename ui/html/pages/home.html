@@ -36,14 +36,21 @@
                                 
                                 <button class="reactionButton" type="submit" name="reaction" value="true">
                                     <img src="/static/img/like.png" class="reactionImg">
+                                   {{if eq .IsLiked 1}}
+                                    <p class="reactionOn">{{.Like}}</p>
+                                    {{else}}
                                     <p class="reaction">{{.Like}}</p>
-                                    
+                                    {{end}}
                                 </button>
                             </div>
                             <div class="reactionContainer">
                                 <button class="reactionButton" type="submit" name="reaction" value="false">
                                     <img src="/static/img/dislike.png" class="reactionImg">
+                                    {{if eq .IsLiked -1}}
+                                    <p class="reactionOn">{{.Dislike}}</p>
+                                    {{else}}
                                     <p class="reaction">{{.Dislike}}</p>
+                                    {{end}}
                                 </button>
                             </div>
                         </div>   

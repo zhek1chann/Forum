@@ -39,6 +39,7 @@ type PostRepo interface {
 type CategoryRepo interface {
 	AddCategoryToPost(int, []int) error
 	GetALLCategory() ([]string, error)
+	GetReactionPost(userID string) (map[int]bool, error)
 	// CreateCategory(string) error
 }
 
@@ -48,7 +49,7 @@ type CommentRepo interface {
 	// 	GetAllCommentByUserID(string) (*[]models.Post, error)
 	CheckReactionComment(form models.ReactionForm) (bool, bool, error)
 	AddReactionComment(form models.ReactionForm) error
-	DeleteReactionComment(form models.ReactionForm, isLike bool) error 
+	DeleteReactionComment(form models.ReactionForm, isLike bool) error
 }
 
 type RepoI interface {

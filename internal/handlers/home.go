@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"forum/models"
+	"forum/pkg/cookie"
 	"net/http"
 	"strconv"
 	"strings"
@@ -44,7 +46,18 @@ func (h *handler) home(w http.ResponseWriter, r *http.Request) {
 		// 	fmt.Println(value)
 		// }
 	}
-
+	token := cookie.GetSessionCookie(r)
+	if token != nil {
+		reactions, err := h.service.GetReactionPost(token.Value)
+		if err != nil {
+			h.app.ServerError(w, err)
+			return
+		}
+		data.Posts = h.service.IsLikedPost(data.Posts, reactions)
+		for _, value := range *data.Posts {
+			fmt.Println(value.IsLiked)
+		}
+	}
 	h.app.Render(w, http.StatusOK, "home.html", data)
 	return
 }
