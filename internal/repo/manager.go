@@ -26,9 +26,7 @@ type PostRepo interface {
 	GetCategoriesByPostID(int) (map[int]string, error)
 	// GetAllPost() (*models.Post, error)
 	// UpdatePost(string, *models.Post) error
-	AddReactionPost(form models.ReactionForm) error
-	DeleteReactionPost(form models.ReactionForm, isLike bool) error
-	CheckReactionPost(form models.ReactionForm) (bool, bool, error)
+
 	GetAllPostByUserID(int) (*[]models.Post, error)
 	GetAllPostByCategory(category int) (*[]models.Post, error)
 	GetPageNumber(pageSize int, category int) (int, error)
@@ -36,16 +34,23 @@ type PostRepo interface {
 	GetAllPostByCategoryPaginated(page int, pageSize int, category int) (*[]models.Post, error)
 }
 
+type InteractionRepo interface {
+	AddReactionPost(form models.ReactionForm) error
+	DeleteReactionPost(form models.ReactionForm, isLike bool) error
+	GetReactionPost(userID, postID int) (bool, bool, error)
+	GetReactionPosts(userID int) (map[int]bool, error)
+	GetReactionComments(userID, postID int) (map[int]bool, error)
+}
+
 type CategoryRepo interface {
 	AddCategoryToPost(int, []int) error
 	GetALLCategory() ([]string, error)
-	GetReactionPost(userID string) (map[int]bool, error)
 	// CreateCategory(string) error
 }
 
 type CommentRepo interface {
 	CommentPost(models.CommentForm) error
-	GetCommentsByPostID(postID string) (*[]models.Comment, error)
+	GetCommentsByPostID(postID int) (*[]models.Comment, error)
 	// 	GetAllCommentByUserID(string) (*[]models.Post, error)
 	CheckReactionComment(form models.ReactionForm) (bool, bool, error)
 	AddReactionComment(form models.ReactionForm) error
@@ -58,6 +63,7 @@ type RepoI interface {
 	PostRepo
 	CategoryRepo
 	CommentRepo
+	InteractionRepo
 }
 
 func New(storagePath string) (RepoI, error) {

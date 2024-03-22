@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"errors"
-	"fmt"
 	"forum/models"
 	"forum/pkg/cookie"
 	"net/http"
@@ -48,15 +47,12 @@ func (h *handler) home(w http.ResponseWriter, r *http.Request) {
 	}
 	token := cookie.GetSessionCookie(r)
 	if token != nil {
-		reactions, err := h.service.GetReactionPost(token.Value)
+		reactions, err := h.service.GetReactionPosts(token.Value)
 		if err != nil {
 			h.app.ServerError(w, err)
 			return
 		}
 		data.Posts = h.service.IsLikedPost(data.Posts, reactions)
-		for _, value := range *data.Posts {
-			fmt.Println(value.IsLiked)
-		}
 	}
 	h.app.Render(w, http.StatusOK, "home.html", data)
 	return

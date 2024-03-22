@@ -2,25 +2,24 @@ package service
 
 import (
 	"forum/models"
-	"strconv"
 )
 
 func (s *service) CommentPost(form models.CommentForm) error {
-	userIDint, err := s.repo.GetUserIDByToken(form.UserID)
+	var err error
+	form.UserID, err = s.repo.GetUserIDByToken(form.Token)
 	if err != nil {
 		return err
 	}
-	form.UserID = strconv.Itoa(userIDint)
 	return s.repo.CommentPost(form)
 }
 
 func (s *service) PostReaction(form models.ReactionForm) error {
-	userIDint, err := s.repo.GetUserIDByToken(form.UserID)
+	var err error
+	form.UserID, err = s.repo.GetUserIDByToken(form.Token)
 	if err != nil {
 		return err
 	}
-	form.UserID = strconv.Itoa(userIDint)
-	exists, isLike, err := s.repo.CheckReactionPost(form)
+	exists, isLike, err := s.repo.GetReactionPost(form.UserID, form.ID)
 	if err != nil {
 		return err
 	}
@@ -43,11 +42,12 @@ func (s *service) PostReaction(form models.ReactionForm) error {
 }
 
 func (s *service) CommentReaction(form models.ReactionForm) error {
-	userIDint, err := s.repo.GetUserIDByToken(form.UserID)
+	var err error
+	form.UserID, err = s.repo.GetUserIDByToken(form.Token)
 	if err != nil {
 		return err
 	}
-	form.UserID = strconv.Itoa(userIDint)
+
 	exists, isLike, err := s.repo.CheckReactionComment(form)
 	if err != nil {
 		return err
@@ -70,21 +70,44 @@ func (s *service) CommentReaction(form models.ReactionForm) error {
 	return nil
 }
 
-func (s *service) GetReactionPost(token string) (map[int]bool, error) {
-	userIDint, err := s.repo.GetUserIDByToken(token)
+func (s *service) GetReactionPosts(token string) (map[int]bool, error) {
+	userID, err := s.repo.GetUserIDByToken(token)
 	if err != nil {
 		return nil, err
 	}
-	userID := strconv.Itoa(userIDint)
-	reactions, err := s.repo.GetReactionPost(userID)
+	reactions, err := s.repo.GetReactionPosts(userID)
 	if err != nil {
 		return nil, err
 	}
 	return reactions, nil
 }
 
-func GetReactionComment(post int) map[int]bool {
-	return nil
+func (s *service) GetReactionPost(token string, postID int) (bool, bool, error) {
+	userID, err := s.repo.GetUserIDByToken(token)
+	if err != nil {
+		return false, false, err
+	}
+
+	exists, reaction, err := s.repo.GetReactionPost(userID, postID)
+	if err != nil {
+		return false, false, err
+	}
+
+	return exists, reaction, nil
+}
+
+func (s *service) GetReactionComment(token string, postID int) (map[int]bool, error) {
+	userID, err := s.repo.GetUserIDByToken(token)
+	if err != nil {
+		return nil, err
+	}
+
+	reactions, err := s.repo.GetReactionComments(userID, postID)
+	if err != nil {
+		return nil, err
+	}
+
+	return reactions, nil
 }
 
 func (s *service) IsLikedPost(posts *[]models.Post, reactions map[int]bool) *[]models.Post {
@@ -94,6 +117,24 @@ func (s *service) IsLikedPost(posts *[]models.Post, reactions map[int]bool) *[]m
 			if post.PostID == key {
 				if value == true {
 					postCopy[i].IsLiked = 1
+				} else {
+					postCopy[i].IsLiked = -1
+				}
+
+				break
+			}
+		}
+	}
+	return &postCopy
+}
+
+func (s *service) IsLikedComment(posts *models.Post, reactions map[int]bool) *[]models.Post {
+	postCopy := *posts
+	for key, value := range reactions {
+		for i, post := range *postCopy.Comment {
+			if post.CommentID == key {
+				if value == true {
+					postCopy.Comment = 1
 				} else {
 					postCopy[i].IsLiked = -1
 				}

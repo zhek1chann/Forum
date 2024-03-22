@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"forum/pkg/cookie"
 	"net/http"
+	"strconv"
 )
 
 type contextKey string
@@ -21,7 +22,7 @@ func methodResolver(w http.ResponseWriter, r *http.Request, get, post func(w htt
 	case http.MethodPost:
 		post(w, r)
 	default:
-		//error
+		// error
 	}
 }
 
@@ -64,3 +65,12 @@ func (h *handler) requireAuthentication(next http.HandlerFunc) http.HandlerFunc 
 // 		next.ServeHTTP(w, r)
 // 	})
 // }
+
+func GetIntForm(r *http.Request, form string) (int, error) {
+	valueString := r.FormValue(form)
+	value, err := strconv.Atoi(valueString)
+	if err != nil {
+		return 0, err
+	}
+	return value, nil
+}

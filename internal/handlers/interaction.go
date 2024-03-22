@@ -7,7 +7,6 @@ import (
 	"forum/pkg/cookie"
 	"forum/pkg/validator"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -23,9 +22,13 @@ func (h *handler) postReaction(w http.ResponseWriter, r *http.Request) {
 	}
 	url := strings.TrimPrefix(r.Header.Get("Referer"), r.Header.Get("Origin"))
 	token := cookie.GetSessionCookie(r)
+	postID, err := GetIntForm(r, "postID")
+	if err != nil {
+		h.app.ServerError(w, err)
+	}
 	form := models.ReactionForm{
-		ID:     r.FormValue("postID"),
-		UserID: token.Value,
+		ID:    postID,
+		Token: token.Value,
 	}
 	reaction := r.FormValue("reaction")
 
@@ -38,7 +41,7 @@ func (h *handler) postReaction(w http.ResponseWriter, r *http.Request) {
 		h.app.ClientError(w, http.StatusBadRequest)
 		return
 	}
-	err := h.service.PostReaction(form)
+	err = h.service.PostReaction(form)
 	if err != nil {
 		h.app.ServerError(w, err)
 		return
@@ -52,11 +55,17 @@ func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 		h.app.ClientError(w, http.StatusBadRequest)
 		return
 	}
+
 	token := cookie.GetSessionCookie(r)
+	postID, err := GetIntForm(r, "postID")
+	if err != nil {
+		h.app.ServerError(w, err)
+	}
+
 	form := models.CommentForm{
 		Content: r.FormValue("comment"),
-		PostID:  r.FormValue("postID"),
-		UserID:  token.Value,
+		PostID:  postID,
+		Token:   token.Value,
 	}
 
 	form.CheckField(validator.NotBlank(form.Content), "comment", "This field cannot be blank")
@@ -70,12 +79,12 @@ func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			h.app.ServerError(w, err)
 		}
-		id, err := strconv.Atoi(form.PostID)
+
 		if err != nil {
 			h.app.ServerError(w, err)
 			return
 		}
-		post, err := h.service.GetPostByID(id)
+		post, err := h.service.GetPostByID(form.PostID)
 		if err != nil {
 			if errors.Is(err, models.ErrNoRecord) {
 				h.app.ClientError(w, 404)
@@ -108,11 +117,21 @@ func (h *handler) commentReaction(w http.ResponseWriter, r *http.Request) {
 		h.app.ServerError(w, err)
 		return
 	}
-	postId := r.FormValue("postID")
+
+	postID, err := GetIntForm(r, "postID")
+	if err != nil {
+		h.app.ServerError(w, err)
+	}
+
+	commentID, err := GetIntForm(r, "commentID")
+	if err != nil {
+		h.app.ServerError(w, err)
+	}
+
 	token := cookie.GetSessionCookie(r)
 	form := models.ReactionForm{
-		ID:     r.FormValue("commentID"),
-		UserID: token.Value,
+		ID:    commentID,
+		Token: token.Value,
 	}
 	reaction := r.FormValue("reaction")
 
@@ -125,10 +144,10 @@ func (h *handler) commentReaction(w http.ResponseWriter, r *http.Request) {
 		h.app.ClientError(w, http.StatusBadRequest)
 		return
 	}
-	err := h.service.CommentReaction(form)
+	err = h.service.CommentReaction(form)
 	if err != nil {
 		h.app.ServerError(w, err)
 		return
 	}
-	http.Redirect(w, r, fmt.Sprintf("/post/%s", postId), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/post/%d", postID), http.StatusSeeOther)
 }

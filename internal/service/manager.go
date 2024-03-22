@@ -20,8 +20,10 @@ type InteractionServiceI interface {
 	CommentPost(models.CommentForm) error
 	PostReaction(models.ReactionForm) error
 	CommentReaction(models.ReactionForm) error
-	GetReactionPost(token string) (map[int]bool, error)
+	GetReactionPosts(token string) (map[int]bool, error)
+	GetReactionPost(token string, postID int) (bool, bool, error)
 	IsLikedPost(posts *[]models.Post, reactions map[int]bool) *[]models.Post
+	GetReactionComment(token string, postID int) (map[int]bool, error)
 }
 
 type UserServiceI interface {

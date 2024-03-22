@@ -15,7 +15,7 @@ func (s *Sqlite) CommentPost(form models.CommentForm) error {
 	return nil
 }
 
-func (s *Sqlite) GetCommentsByPostID(postID string) (*[]models.Comment, error) {
+func (s *Sqlite) GetCommentsByPostID(postID int) (*[]models.Comment, error) {
 	const query = `SELECT c.id, c.post_id, c.user_id, c.created, c.content, c.like, c.dislike, u.name 
 	FROM comments c 
 	JOIN users u ON c.user_id = u.id 

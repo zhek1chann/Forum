@@ -3,7 +3,6 @@ package service
 import (
 	"fmt"
 	"forum/models"
-	"strconv"
 )
 
 func (s *service) CreatePost(title, content, token string, categories []int) (int, error) {
@@ -35,7 +34,7 @@ func (s *service) GetPostByID(id int) (*models.Post, error) {
 	}
 	post.Categories = categories
 
-	comment, err := s.repo.GetCommentsByPostID(strconv.Itoa(id))
+	comment, err := s.repo.GetCommentsByPostID(id)
 	if err != nil {
 		return nil, err
 	}

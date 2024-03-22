@@ -33,16 +33,18 @@ type Comment struct {
 }
 
 type CommentForm struct {
-	PostID  string
-	UserID  string
+	PostID  int
+	UserID  int
 	Content string
+	Token   string
 	validator.Validator
 }
 
 type ReactionForm struct {
-	ID       string
-	UserID   string
+	ID       int
+	UserID   int
 	Reaction bool
+	Token   string
 }
 
 type PostForm struct {

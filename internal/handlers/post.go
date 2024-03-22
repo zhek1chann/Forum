@@ -77,6 +77,24 @@ func (h *handler) postView(w http.ResponseWriter, r *http.Request) {
 
 	data := h.app.NewTemplateData(r)
 	data.Post = post
+	token := cookie.GetSessionCookie(r)
+	if token != nil {
+		exists, reaction, err := h.service.GetReactionPost(token.Value, ID)
+		if err != nil {
+			h.app.ServerError(w, err)
+			return
+		}
+		if exists {
+			if reaction == true {
+				data.Post.IsLiked = 1
+			} else {
+				data.Post.IsLiked = -1
+			}
+		}
+	}
+
+	reactions, err := h.service.GetReactionComment(token.Value, ID)
+
 	data.Form = models.CommentForm{}
 	data.Categories, err = h.service.GetAllCategory()
 	if err != nil {
