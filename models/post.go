@@ -30,6 +30,7 @@ type Comment struct {
 	Created   time.Time
 	Like      string
 	Dislike   string
+	IsLiked   int
 }
 
 type CommentForm struct {
@@ -44,7 +45,7 @@ type ReactionForm struct {
 	ID       int
 	UserID   int
 	Reaction bool
-	Token   string
+	Token    string
 }
 
 type PostForm struct {

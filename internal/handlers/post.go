@@ -95,6 +95,8 @@ func (h *handler) postView(w http.ResponseWriter, r *http.Request) {
 
 	reactions, err := h.service.GetReactionComment(token.Value, ID)
 
+	data.Post = h.service.IsLikedComment(data.Post, reactions)
+
 	data.Form = models.CommentForm{}
 	data.Categories, err = h.service.GetAllCategory()
 	if err != nil {

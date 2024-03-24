@@ -104,7 +104,7 @@ func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 		h.app.ServerError(w, err)
 		return
 	}
-	http.Redirect(w, r, fmt.Sprintf("/post/%s", form.PostID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/post/%d", form.PostID), http.StatusSeeOther)
 }
 
 func (h *handler) commentReaction(w http.ResponseWriter, r *http.Request) {
