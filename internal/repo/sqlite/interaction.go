@@ -131,3 +131,5 @@ func (s *Sqlite) GetReactionPosts(userID int) (map[int]bool, error) {
 	}
 	return reactions, nil
 }
+
+

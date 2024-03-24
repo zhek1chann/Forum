@@ -94,6 +94,25 @@ func (s *service) GetAllPostByUser(token string) (*[]models.Post, error) {
 	if err = s.getCategoryToPost(posts); err != nil {
 		return nil, err
 	}
+	for _, post := range *posts {
+		fmt.Println(post)
+	}
+	return posts, nil
+}
+
+func (s *service) GetLikedPosts(token string) (*[]models.Post, error) {
+	userID, err := s.repo.GetUserIDByToken(token)
+	if err != nil {
+		return nil, err
+	}
+	posts, err := s.repo.GetLikedPosts(userID)
+	if err != nil {
+		return nil, err
+	}
+	if err = s.getCategoryToPost(posts); err != nil {
+		return nil, err
+	}
+
 	return posts, nil
 }
 

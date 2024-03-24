@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"forum/models"
-	"forum/pkg/cookie"
 	"forum/ui"
 	"html/template"
 	"io/fs"
@@ -40,7 +39,6 @@ var functions = template.FuncMap{
 	"sequence": sequence,
 	"toLower":  strings.ToLower,
 }
-
 
 func NewTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
@@ -83,18 +81,4 @@ func (app *Application) Render(w http.ResponseWriter, status int, page string, d
 	}
 	w.WriteHeader(status)
 	buf.WriteTo(w)
-}
-
-func (app *Application) NewTemplateData(r *http.Request) *models.TemplateData {
-	return &models.TemplateData{
-		CurrentYear: time.Now().Year(),
-		// Flash:           app.sessionManager.PopString(r.Context(), "flash"),
-		IsAuthenticated: app.isAuthenticated(r),
-		// CSRFToken:       nosurf.Token(r),
-	}
-}
-
-func (app *Application) isAuthenticated(r *http.Request) bool {
-	cookie := cookie.GetSessionCookie(r)
-	return cookie != nil && cookie.Value != ""
 }

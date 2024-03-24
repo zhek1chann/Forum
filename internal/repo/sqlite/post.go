@@ -63,7 +63,12 @@ func (s *Sqlite) GetAllPost() ([]models.Post, error) {
 }
 
 func (s *Sqlite) GetAllPostByUserID(userID int) (*[]models.Post, error) {
-	const query = `SELECT id, user_id, title, content, created, like, dislike, image_name FROM posts WHERE user_id=?`
+	const query = `SELECT p.id, p.user_id, p.title, p.content, p.created, p.like, p.dislike, p.image_name, u.name 
+	FROM posts p 
+	JOIN users u ON p.user_id = u.id
+	WHERE p.user_id = ?
+	ORDER BY p.created DESC`
+
 	rows, err := s.db.Query(query, userID)
 	if err != nil {
 		return nil, err
@@ -74,7 +79,7 @@ func (s *Sqlite) GetAllPostByUserID(userID int) (*[]models.Post, error) {
 
 	for rows.Next() {
 		var post models.Post
-		err := rows.Scan(&post.PostID, &post.UserID, &post.Title, &post.Content, &post.Created, &post.Like, &post.Dislike, &post.ImageName)
+		err := rows.Scan(&post.PostID, &post.UserID, &post.Title, &post.Content, &post.Created, &post.Like, &post.Dislike, &post.ImageName, &post.UserName)
 		if err != nil {
 			return nil, err
 		}
@@ -118,6 +123,7 @@ func (s *Sqlite) GetAllPostByCategoryPaginated(page int, pageSize int, categoryI
 			  JOIN users u ON p.user_id = u.id 
               WHERE pc.category_id IN (?)
               GROUP BY p.id
+			  ORDER BY p.created DESC
 			  LIMIT ? OFFSET ?`
 
 	rows, err := s.db.Query(query, categoryID, pageSize, offset)
@@ -144,7 +150,9 @@ func (s *Sqlite) GetAllPostPaginated(page int, pageSize int) (*[]models.Post, er
 	stmt := `SELECT p.id, p.user_id, p.title, p.content, p.created, p.like, p.dislike, p.image_name, u.name 
 	FROM posts p 
 	JOIN users u ON p.user_id = u.id 
-	LIMIT ? OFFSET ?`
+	ORDER BY p.created DESC
+	LIMIT ? OFFSET ?
+	`
 
 	rows, err := s.db.Query(stmt, pageSize, offset)
 	if err != nil {
@@ -160,6 +168,39 @@ func (s *Sqlite) GetAllPostPaginated(page int, pageSize int) (*[]models.Post, er
 		}
 		posts = append(posts, post)
 	}
+	return &posts, nil
+}
+
+func (s *Sqlite) GetLikedPosts(userID int) (*[]models.Post, error) {
+	const query = `SELECT p.id, p.user_id, p.title, p.content, p.created, p.like, p.dislike, p.image_name, u.name 
+	FROM posts p 
+	JOIN users u ON p.user_id = u.id
+	JOIN post_user_Like l ON p.id = l.post_id
+	WHERE l.user_id = ? AND l.is_like = TRUE
+	GROUP BY p.id
+	ORDER BY p.created DESC`
+
+	rows, err := s.db.Query(query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []models.Post
+
+	for rows.Next() {
+		var post models.Post
+		err := rows.Scan(&post.PostID, &post.UserID, &post.Title, &post.Content, &post.Created, &post.Like, &post.Dislike, &post.ImageName, &post.UserName)
+		if err != nil {
+			return nil, err
+		}
+		posts = append(posts, post)
+	}
+
+	for _, p := range posts {
+		fmt.Println(p.UserID, p.Like)
+	}
+
 	return &posts, nil
 }
 

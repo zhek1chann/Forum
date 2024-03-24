@@ -3,6 +3,7 @@ package service
 import (
 	"forum/internal/repo"
 	"forum/models"
+	"net/http"
 )
 
 type service struct {
@@ -28,7 +29,7 @@ type InteractionServiceI interface {
 }
 
 type UserServiceI interface {
-	GetUser(int) *models.User
+	GetUser(*http.Request) (*models.User, error)
 	CreateUser(models.User) error
 	Authenticate(string, string) (*models.Session, error)
 	DeleteSession(string) error
@@ -42,6 +43,7 @@ type PostServiceI interface {
 	GetPageNumber(int, int) (int, error)
 	GetAllPostByCategory(category int) (*[]models.Post, error)
 	GetAllPostByUser(token string) (*[]models.Post, error)
+	GetLikedPosts(token string) (*[]models.Post, error)
 }
 
 type CategoryServiceI interface {

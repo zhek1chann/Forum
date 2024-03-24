@@ -17,7 +17,10 @@ func (h *handler) postCreate(w http.ResponseWriter, r *http.Request) {
 
 func (h *handler) postCreateGet(w http.ResponseWriter, r *http.Request) {
 	var err error
-	data := h.app.NewTemplateData(r)
+	data, err := h.NewTemplateData(r)
+	if err != nil {
+		h.app.ServerError(w, err)
+	}
 
 	data.Form = models.PostForm{}
 	data.Categories, err = h.service.GetAllCategory()
@@ -40,7 +43,10 @@ func (h *handler) postCreatePost(w http.ResponseWriter, r *http.Request) {
 	form.CheckField(validator.IsError(form.ConverCategories()), "categories", "This field is incoreted")
 
 	if !form.Valid() {
-		data := h.app.NewTemplateData(r)
+		data, err := h.NewTemplateData(r)
+		if err != nil {
+			h.app.ServerError(w, err)
+		}
 		data.Form = form
 		categories, err := h.service.GetAllCategory()
 		if err != nil {
@@ -75,7 +81,10 @@ func (h *handler) postView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := h.app.NewTemplateData(r)
+	data, err := h.NewTemplateData(r)
+	if err != nil {
+		h.app.ServerError(w, err)
+	}
 	data.Post = post
 	token := cookie.GetSessionCookie(r)
 	if token != nil {
@@ -91,11 +100,13 @@ func (h *handler) postView(w http.ResponseWriter, r *http.Request) {
 				data.Post.IsLiked = -1
 			}
 		}
+		reactions, err := h.service.GetReactionComment(token.Value, ID)
+		if err != nil {
+			h.app.ServerError(w, err)
+			return
+		}
+		data.Post = h.service.IsLikedComment(data.Post, reactions)
 	}
-
-	reactions, err := h.service.GetReactionComment(token.Value, ID)
-
-	data.Post = h.service.IsLikedComment(data.Post, reactions)
 
 	data.Form = models.CommentForm{}
 	data.Categories, err = h.service.GetAllCategory()

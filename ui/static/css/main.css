@@ -571,6 +571,19 @@ footer {
     float: right;
   }
 
+  .user-card{
+    display: flex;
+    flex-direction: column;
+  }
+
+
+
+  .user-menu{
+    margin-top: 15px;
+    list-style: none;
+  }
+
+
   @media screen and (max-width: 2500px) {
       .left{
         left: 10%;

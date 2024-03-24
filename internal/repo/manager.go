@@ -26,7 +26,7 @@ type PostRepo interface {
 	GetCategoriesByPostID(int) (map[int]string, error)
 	// GetAllPost() (*models.Post, error)
 	// UpdatePost(string, *models.Post) error
-
+	GetLikedPosts(userID int)  (*[]models.Post, error)
 	GetAllPostByUserID(int) (*[]models.Post, error)
 	GetAllPostByCategory(category int) (*[]models.Post, error)
 	GetPageNumber(pageSize int, category int) (int, error)

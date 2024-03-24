@@ -73,7 +73,10 @@ func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 	form.CheckField(validator.MaxChars(form.Content, 50), "comment", "This field must be maximum 50 characters")
 
 	if !form.Valid() {
-		data := h.app.NewTemplateData(r)
+		data,err := h.NewTemplateData(r)
+		if err != nil {
+			h.app.ServerError(w, err)
+		}
 		data.Form = form
 		data.Categories, err = h.service.GetAllCategory()
 		if err != nil {

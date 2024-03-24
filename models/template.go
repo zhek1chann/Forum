@@ -1,7 +1,6 @@
 package models
 
 type TemplateData struct {
-	CurrentYear     int
 	Post            *Post
 	Posts           *[]Post
 	Categories      []string

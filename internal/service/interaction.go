@@ -128,21 +128,28 @@ func (s *service) IsLikedPost(posts *[]models.Post, reactions map[int]bool) *[]m
 	return &postCopy
 }
 
-func (s *service) IsLikedComment(posts *models.Post, reactions map[int]bool) *models.Post {
-	postCopy := *posts
-	newComments := *posts.Comment
-	for key, value := range reactions {
-		for i, comment := range *postCopy.Comment {
-			if comment.CommentID == key {
-				if value == true {
-					newComments[i].IsLiked = 1
-				} else {
-					newComments[i].IsLiked = -1
+func (s *service) IsLikedComment(post *models.Post, reactions map[int]bool) *models.Post {
+	postCopy := *post
+	if post.Comment != nil {
+		newComments := *post.Comment
+
+		if len(newComments) > 0 && newComments[0].Content != "" {
+			for key, value := range reactions {
+				for i, comment := range *postCopy.Comment {
+					if comment.CommentID == key {
+						if value == true {
+							newComments[i].IsLiked = 1
+						} else {
+							newComments[i].IsLiked = -1
+						}
+						break
+					}
 				}
-				break
 			}
 		}
+
+		postCopy.Comment = &newComments
 	}
-	postCopy.Comment = &newComments
+
 	return &postCopy
 }

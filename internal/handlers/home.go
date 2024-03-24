@@ -2,11 +2,11 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"forum/models"
 	"forum/pkg/cookie"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 const (
@@ -15,8 +15,12 @@ const (
 )
 
 func (h *handler) home(w http.ResponseWriter, r *http.Request) {
-	data := h.app.NewTemplateData(r)
-	data, err := h.setUpPage(data, r)
+	data, err := h.NewTemplateData(r)
+	if err != nil {
+		h.app.ServerError(w, err)
+	}
+	fmt.Println(data.User)
+	data, err = h.setUpPage(data, r)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			h.app.NotFound(w)
@@ -41,9 +45,6 @@ func (h *handler) home(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		data.Posts = posts
-		// for _, value := range *posts {
-		// 	fmt.Println(value)
-		// }
 	}
 	token := cookie.GetSessionCookie(r)
 	if token != nil {
@@ -56,38 +57,6 @@ func (h *handler) home(w http.ResponseWriter, r *http.Request) {
 	}
 	h.app.Render(w, http.StatusOK, "home.html", data)
 	return
-}
-
-func (h *handler) setUpPage(data *models.TemplateData, r *http.Request) (*models.TemplateData, error) {
-	var err error
-	currentPageStr := r.URL.Query().Get("page")
-	data.Category = strings.Title(r.URL.Query().Get("category"))
-	// fmt.Print(data.Category)
-	data.Categories, err = h.service.GetAllCategory()
-	if err != nil {
-		return nil, err
-	}
-	if data.Category != "" {
-		for key, value := range data.Categories {
-			if data.Category == value {
-				data.Category_id = key + 1
-				break
-			}
-		}
-		if data.Category_id == 0 {
-			return nil, models.ErrNoRecord
-		}
-	}
-	data.NumberOfPage, err = h.service.GetPageNumber(pageSize, data.Category_id)
-	if err != nil {
-		return nil, err
-	}
-	data.CurrentPage, err = strconv.Atoi(currentPageStr)
-	if err != nil || data.CurrentPage < 1 || data.CurrentPage > data.NumberOfPage {
-		data.CurrentPage = defaultPage
-	}
-
-	return data, nil
 }
 
 // func (h *handler) homePost(w http.ResponseWriter, r *http.Request) {
@@ -105,7 +74,7 @@ func (h *handler) setUpPage(data *models.TemplateData, r *http.Request) (*models
 // 	if err != nil {
 // 		h.app.ServerError(w, err)
 // 	}
-// 	data := h.app.NewTemplateData(r)
+// 	data := h.NewTemplateData(r)
 
 // 	data.Categories, err = h.service.GetAllCategory()
 // 	if err != nil {
