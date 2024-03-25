@@ -57,7 +57,6 @@ func (s *Sqlite) AddReactionPost(form models.ReactionForm) error {
 func (s *Sqlite) DeleteReactionPost(form models.ReactionForm, isLike bool) error {
 	tx, err := s.db.Begin()
 	if err != nil {
-		fmt.Println("here")
 		return err
 	}
 

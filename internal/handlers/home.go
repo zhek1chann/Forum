@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"errors"
-	"fmt"
 	"forum/models"
 	"forum/pkg/cookie"
 	"net/http"
@@ -19,7 +18,6 @@ func (h *handler) home(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.app.ServerError(w, err)
 	}
-	fmt.Println(data.User)
 	data, err = h.setUpPage(data, r)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {

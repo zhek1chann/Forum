@@ -42,8 +42,8 @@ type PostServiceI interface {
 	GetAllPostByCategoryPaginated(curentPage, pageSize, category int) (*[]models.Post, error)
 	GetPageNumber(int, int) (int, error)
 	GetAllPostByCategory(category int) (*[]models.Post, error)
-	GetAllPostByUser(token string) (*[]models.Post, error)
-	GetLikedPosts(token string) (*[]models.Post, error)
+	GetAllPostByUserPaginated(token string, curentPage, pageSize int) (*[]models.Post, error)
+	GetLikedPostsPaginated(token string, curentPage, pageSize int) (*[]models.Post, error)
 }
 
 type CategoryServiceI interface {

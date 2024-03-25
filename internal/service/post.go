@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"forum/models"
 )
 
@@ -40,7 +39,6 @@ func (s *service) GetPostByID(id int) (*models.Post, error) {
 	}
 	if *comment != nil {
 		post.Comment = comment
-		fmt.Print(len(*comment))
 	}
 
 	// exists, isLike, err:=s.repo.CheckReactionPost(models.PostReactionForm{PostID: strconv.Itoa(id),UserID: })
@@ -82,30 +80,28 @@ func (s *service) GetAllPostByCategory(category int) (*[]models.Post, error) {
 	return posts, nil
 }
 
-func (s *service) GetAllPostByUser(token string) (*[]models.Post, error) {
+func (s *service) GetAllPostByUserPaginated(token string, curentPage, pageSize int) (*[]models.Post, error) {
 	userID, err := s.repo.GetUserIDByToken(token)
 	if err != nil {
 		return nil, err
 	}
-	posts, err := s.repo.GetAllPostByUserID(userID)
+	posts, err := s.repo.GetAllPostByUserIDPaginated(userID, curentPage, pageSize)
 	if err != nil {
 		return nil, err
 	}
 	if err = s.getCategoryToPost(posts); err != nil {
 		return nil, err
 	}
-	for _, post := range *posts {
-		fmt.Println(post)
-	}
+
 	return posts, nil
 }
 
-func (s *service) GetLikedPosts(token string) (*[]models.Post, error) {
+func (s *service) GetLikedPostsPaginated(token string, curentPage, pageSize int) (*[]models.Post, error) {
 	userID, err := s.repo.GetUserIDByToken(token)
 	if err != nil {
 		return nil, err
 	}
-	posts, err := s.repo.GetLikedPosts(userID)
+	posts, err := s.repo.GetLikedPostsPaginated(userID, curentPage, pageSize)
 	if err != nil {
 		return nil, err
 	}

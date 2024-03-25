@@ -62,14 +62,16 @@ func (s *Sqlite) GetAllPost() ([]models.Post, error) {
 	return posts, nil
 }
 
-func (s *Sqlite) GetAllPostByUserID(userID int) (*[]models.Post, error) {
+func (s *Sqlite) GetAllPostByUserIDPaginated(userID, page, pageSize int) (*[]models.Post, error) {
+	offset := (page - 1) * pageSize
 	const query = `SELECT p.id, p.user_id, p.title, p.content, p.created, p.like, p.dislike, p.image_name, u.name 
 	FROM posts p 
 	JOIN users u ON p.user_id = u.id
 	WHERE p.user_id = ?
-	ORDER BY p.created DESC`
+	ORDER BY p.created DESC
+	LIMIT ? OFFSET ?`
 
-	rows, err := s.db.Query(query, userID)
+	rows, err := s.db.Query(query, userID, pageSize, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -171,16 +173,18 @@ func (s *Sqlite) GetAllPostPaginated(page, pageSize int) (*[]models.Post, error)
 	return &posts, nil
 }
 
-func (s *Sqlite) GetLikedPosts(userID int) (*[]models.Post, error) {
+func (s *Sqlite) GetLikedPostsPaginated(userID, page, pageSize int) (*[]models.Post, error) {
+	offset := (page - 1) * pageSize
 	const query = `SELECT p.id, p.user_id, p.title, p.content, p.created, p.like, p.dislike, p.image_name, u.name 
 	FROM posts p 
 	JOIN users u ON p.user_id = u.id
 	JOIN post_user_Like l ON p.id = l.post_id
 	WHERE l.user_id = ? AND l.is_like = TRUE
 	GROUP BY p.id
-	ORDER BY p.created DESC`
+	ORDER BY p.created DESC
+	LIMIT ? OFFSET ?`
 
-	rows, err := s.db.Query(query, userID)
+	rows, err := s.db.Query(query, userID, pageSize, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -195,10 +199,6 @@ func (s *Sqlite) GetLikedPosts(userID int) (*[]models.Post, error) {
 			return nil, err
 		}
 		posts = append(posts, post)
-	}
-
-	for _, p := range posts {
-		fmt.Println(p.UserID, p.Like)
 	}
 
 	return &posts, nil
@@ -227,6 +227,5 @@ func (s *Sqlite) GetPageNumber(pageSize int, category int) (int, error) {
 	}
 
 	totalPages := (totalPosts + pageSize - 1) / pageSize
-	fmt.Print(totalPages)
 	return totalPages, nil
 }
