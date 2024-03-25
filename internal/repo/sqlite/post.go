@@ -144,7 +144,7 @@ func (s *Sqlite) GetAllPostByCategoryPaginated(page int, pageSize int, categoryI
 	return &posts, nil
 }
 
-func (s *Sqlite) GetAllPostPaginated(page int, pageSize int) (*[]models.Post, error) {
+func (s *Sqlite) GetAllPostPaginated(page, pageSize int) (*[]models.Post, error) {
 	op := "sqlite.GetAllPostPaginated"
 	offset := (page - 1) * pageSize
 	stmt := `SELECT p.id, p.user_id, p.title, p.content, p.created, p.like, p.dislike, p.image_name, u.name 
@@ -227,6 +227,6 @@ func (s *Sqlite) GetPageNumber(pageSize int, category int) (int, error) {
 	}
 
 	totalPages := (totalPosts + pageSize - 1) / pageSize
-
+	fmt.Print(totalPages)
 	return totalPages, nil
 }

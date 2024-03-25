@@ -78,6 +78,7 @@ func (h *handler) isAuthenticated(r *http.Request) bool {
 func (h *handler) setUpPage(data *models.TemplateData, r *http.Request) (*models.TemplateData, error) {
 	var err error
 	currentPageStr := r.URL.Query().Get("page")
+	limit := r.URL.Query().Get("limit")
 	data.Category = strings.Title(r.URL.Query().Get("category"))
 	// fmt.Print(data.Category)
 	data.Categories, err = h.service.GetAllCategory()
@@ -95,7 +96,12 @@ func (h *handler) setUpPage(data *models.TemplateData, r *http.Request) (*models
 			return nil, models.ErrNoRecord
 		}
 	}
-	data.NumberOfPage, err = h.service.GetPageNumber(pageSize, data.Category_id)
+	data.Limit, err = strconv.Atoi(limit)
+	if err != nil || data.Limit < 1 {
+		data.Limit = pageSize
+	}
+	fmt.Print(data.Limit)
+	data.NumberOfPage, err = h.service.GetPageNumber(data.Limit, data.Category_id)
 	if err != nil {
 		return nil, err
 	}

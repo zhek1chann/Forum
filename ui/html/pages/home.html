@@ -62,12 +62,13 @@
 
 <div class="pagination">
     {{ $currentPage := .CurrentPage }}
+    {{ $limit := .Limit }}
     {{ $category := .Category}}
     {{ if gt $currentPage 1 }}
         {{with $category}}
-                <a href="?category={{toLower $category}}&page={{sub $currentPage 1}}&limit=5" class="previous">Previous</a>
+                <a href="?category={{toLower $category}}&page={{sub $currentPage 1}}&limit={{$limit}}" class="previous">Previous</a>
                 {{else}}
-                <a href="?page={{sub $currentPage 1}}&limit=5" class="previous">Previous</a>
+                <a href="?page={{sub $currentPage 1}}&limit={{$limit}}" class="previous">Previous</a>
         {{ end }}
     {{ end }}
     {{ range $i := sequence 1 .NumberOfPage }}
@@ -75,18 +76,29 @@
             <span>{{$i}}</span>
         {{ else }}
             {{with $category}}
-                <a href="?category={{toLower $category}}&page={{$i}}&limit=5">{{$i}}</a>
+                <a href="?category={{toLower $category}}&page={{$i}}&limit={{$limit}}">{{$i}}</a>
                 {{else}}
-                <a href="?page={{$i}}&limit=5">{{$i}}</a>
+                <a href="?page={{$i}}&limit={{$limit}}">{{$i}}</a>
             {{end}}
         {{end}}
     {{ end }}
     {{ if lt $currentPage .NumberOfPage }}
         {{with $category}}
-            <a href="?category={{toLower $category}}&page={{add $currentPage 1}}&limit=5" class="next">Next</a>
+            <a href="?category={{toLower $category}}&page={{add $currentPage 1}}&limit={{$limit}}" class="next">Next</a>
             {{else}}
-            <a href="/?page={{add $currentPage 1}}&limit=5" class="next">Next</a>
+            <a href="/?page={{add $currentPage 1}}&limit={{$limit}}" class="next">Next</a>
         {{end}}
     {{ end }}
+    <form action="/">
+  <select id="limit" name="limit">
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+  </select>
+  <input type="submit">
+</form>
 </div>
 {{end}}

@@ -11,6 +11,7 @@ type TemplateData struct {
 	User            *User
 	NumberOfPage    int
 	CurrentPage     int
+	Limit           int
 	Category        string
 	Category_id     int
 }

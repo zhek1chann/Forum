@@ -31,7 +31,7 @@ func (h *handler) home(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if data.Category_id == 0 {
-		posts, err := h.service.GetAllPostPaginated(data.CurrentPage, pageSize)
+		posts, err := h.service.GetAllPostPaginated(data.CurrentPage, data.Limit)
 		if err != nil {
 			h.app.ServerError(w, err)
 			return
@@ -39,7 +39,7 @@ func (h *handler) home(w http.ResponseWriter, r *http.Request) {
 
 		data.Posts = posts
 	} else {
-		posts, err := h.service.GetAllPostByCategoryPaginated(data.CurrentPage, pageSize, data.Category_id)
+		posts, err := h.service.GetAllPostByCategoryPaginated(data.CurrentPage, data.Limit, data.Category_id)
 		if err != nil {
 			h.app.ServerError(w, err)
 			return
