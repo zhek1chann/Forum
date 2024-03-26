@@ -8,17 +8,12 @@ import (
 	"strconv"
 )
 
-const (
-	pageSize    = 5
-	defaultPage = 1
-)
-
 func (h *handler) home(w http.ResponseWriter, r *http.Request) {
 	data, err := h.NewTemplateData(r)
 	if err != nil {
 		h.app.ServerError(w, err)
 	}
-	data, err = h.setUpPage(data, r)
+	data, err = h.service.SetUpPage(data, r)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			h.app.NotFound(w)

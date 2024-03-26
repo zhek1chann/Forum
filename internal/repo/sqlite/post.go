@@ -229,3 +229,41 @@ func (s *Sqlite) GetPageNumber(pageSize int, category int) (int, error) {
 	totalPages := (totalPosts + pageSize - 1) / pageSize
 	return totalPages, nil
 }
+
+func (s *Sqlite) GetPageNumberLikedPosts(pageSize int, userID int) (int, error) {
+	var totalPosts int
+	op := "sqlite.GetPageNumberLikedPosts"
+
+	stmt := `SELECT COUNT(*)
+	FROM posts p 
+	JOIN users u ON p.user_id = u.id
+	JOIN post_user_Like l ON p.id = l.post_id
+	WHERE l.user_id = ? AND l.is_like = TRUE
+	GROUP BY p.id
+	`
+	err := s.db.QueryRow(stmt, userID).Scan(&totalPosts)
+	if err != nil {
+		return 0, fmt.Errorf("%s: %w", op, err)
+	}
+
+	totalPages := (totalPosts + pageSize - 1) / pageSize
+	return totalPages, nil
+}
+
+func (s *Sqlite) GetPageNumberMyPosts(pageSize int, userID int) (int, error) {
+	var totalPosts int
+	op := "sqlite.GetPageNumberMyPosts"
+
+	stmt := `SELECT COUNT(*) 
+	FROM posts p 
+	JOIN users u ON p.user_id = u.id
+	WHERE p.user_id = ?
+	`
+	err := s.db.QueryRow(stmt, userID).Scan(&totalPosts)
+	if err != nil {
+		return 0, fmt.Errorf("%s: %w", op, err)
+	}
+
+	totalPages := (totalPosts + pageSize - 1) / pageSize
+	return totalPages, nil
+}

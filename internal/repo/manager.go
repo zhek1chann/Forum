@@ -18,6 +18,7 @@ type SessionRepo interface {
 	CreateSession(*models.Session) error
 	DeleteSessionByUserID(int) error
 	DeleteSessionByToken(string) error
+	IsValidToken(token string) (bool, error)
 }
 
 type PostRepo interface {
@@ -32,6 +33,8 @@ type PostRepo interface {
 	GetPageNumber(pageSize int, category int) (int, error)
 	GetAllPostPaginated(page int, pageSize int) (*[]models.Post, error)
 	GetAllPostByCategoryPaginated(page int, pageSize int, category int) (*[]models.Post, error)
+	GetPageNumberLikedPosts(pageSize int, userID int) (int, error)
+	GetPageNumberMyPosts(pageSize int, userID int) (int, error)
 }
 
 type InteractionRepo interface {

@@ -29,6 +29,7 @@ type InteractionServiceI interface {
 }
 
 type UserServiceI interface {
+	ValidToken(token string) (bool, error)
 	GetUser(*http.Request) (*models.User, error)
 	CreateUser(models.User) error
 	Authenticate(string, string) (*models.Session, error)
@@ -40,10 +41,10 @@ type PostServiceI interface {
 	GetPostByID(int) (*models.Post, error)
 	GetAllPostPaginated(curentPage, pageSize int) (*[]models.Post, error)
 	GetAllPostByCategoryPaginated(curentPage, pageSize, category int) (*[]models.Post, error)
-	GetPageNumber(int, int) (int, error)
 	GetAllPostByCategory(category int) (*[]models.Post, error)
 	GetAllPostByUserPaginated(token string, curentPage, pageSize int) (*[]models.Post, error)
 	GetLikedPostsPaginated(token string, curentPage, pageSize int) (*[]models.Post, error)
+	SetUpPage(data *models.TemplateData, r *http.Request) (*models.TemplateData, error)
 }
 
 type CategoryServiceI interface {

@@ -122,7 +122,7 @@ func (h *handler) PostByUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.app.ServerError(w, err)
 	}
-	data, err = h.setUpPage(data, r)
+	data, err = h.service.SetUpPage(data, r)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			h.app.NotFound(w)
@@ -164,7 +164,7 @@ func (h *handler) LikedPosts(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.app.ServerError(w, err)
 	}
-	data, err = h.setUpPage(data, r)
+	data, err = h.service.SetUpPage(data, r)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			h.app.NotFound(w)

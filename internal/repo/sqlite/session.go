@@ -1,8 +1,11 @@
 package sqlite
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"forum/models"
+	"time"
 )
 
 func (s *Sqlite) GetUserIDByToken(token string) (int, error) {
@@ -28,6 +31,26 @@ func (s *Sqlite) CreateSession(session *models.Session) error {
 	return nil
 }
 
+func (s *Sqlite) IsValidToken(token string) (bool, error) {
+	op := "sqlite.CreateSession"
+	stmt := `SELECT exp_time FROM sessions WHERE token = ?`
+	var expTime time.Time
+
+	err := s.db.QueryRow(stmt, token).Scan(&expTime)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return false, nil
+		}
+		return false, fmt.Errorf("%s: %w", op, err)
+	}
+
+	if !expTime.After(time.Now()) {
+		fmt.Println("loooooooooooooox")
+		return false, nil
+	}
+	return true, nil
+}
+
 func (s *Sqlite) DeleteSessionByUserID(userID int) error {
 	op := "sqlite.DeleteSessionByUserID"
 	stmt := `DELETE FROM sessions WHERE user_id = ?`
@@ -35,7 +58,6 @@ func (s *Sqlite) DeleteSessionByUserID(userID int) error {
 		return fmt.Errorf("%s: %w", op, err)
 	}
 	return nil
-
 }
 
 func (s *Sqlite) DeleteSessionByToken(token string) error {

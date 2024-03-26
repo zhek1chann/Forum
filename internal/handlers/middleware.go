@@ -6,7 +6,6 @@ import (
 	"forum/pkg/cookie"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 type contextKey string
@@ -33,8 +32,19 @@ func (h *handler) requireAuthentication(next http.HandlerFunc) http.HandlerFunc 
 		// If the user is not authenticated, redirect them to the login page and
 		// return from the middleware chain so that no subsequent handlers in
 		// the chain are executed.
-		cookie := cookie.GetSessionCookie(r)
-		if cookie == nil {
+		c := cookie.GetSessionCookie(r)
+		if c == nil {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+
+		isValid, err := h.service.ValidToken(c.Path)
+		if err != nil {
+			h.app.ServerError(w, err)
+			return
+		}
+		if !isValid {
+			cookie.ExpireSessionCookie(w)
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
@@ -42,6 +52,42 @@ func (h *handler) requireAuthentication(next http.HandlerFunc) http.HandlerFunc 
 		w.Header().Add("Cache-Control", "no-store")
 
 		// And call the next handler in the chain.
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (h *handler) checkCookie(next http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		c := cookie.GetSessionCookie(r)
+		if c != nil {
+			isValid, err := h.service.ValidToken(c.Value)
+			if err != nil {
+				h.app.ServerError(w, err)
+				return
+			}
+
+			if !isValid {
+				cookie.ExpireSessionCookie(w)
+				http.Redirect(w, r, r.URL.Path, http.StatusSeeOther)
+				return
+			}
+
+		}
+
+		w.Header().Add("Cache-Control", "no-store")
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (h *handler) notRegistered(next http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		c := cookie.GetSessionCookie(r)
+		if c != nil {
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+			return
+		}
+
 		next.ServeHTTP(w, r)
 	})
 }
@@ -73,44 +119,4 @@ func (h *handler) NewTemplateData(r *http.Request) (*models.TemplateData, error)
 func (h *handler) isAuthenticated(r *http.Request) bool {
 	cookie := cookie.GetSessionCookie(r)
 	return cookie != nil && cookie.Value != ""
-}
-
-func (h *handler) setUpPage(data *models.TemplateData, r *http.Request) (*models.TemplateData, error) {
-	var err error
-	currentPageStr := r.URL.Query().Get("page")
-	limit := r.URL.Query().Get("limit")
-	data.Category = strings.Title(r.URL.Query().Get("category"))
-	if len(data.Category) == 0 {
-		data.Category = r.FormValue("category")
-	}
-
-	data.Categories, err = h.service.GetAllCategory()
-	if err != nil {
-		return nil, err
-	}
-	if data.Category != "" {
-		for key, value := range data.Categories {
-			if data.Category == value {
-				data.Category_id = key + 1
-				break
-			}
-		}
-		if data.Category_id == 0 {
-			return nil, models.ErrNoRecord
-		}
-	}
-	data.Limit, err = strconv.Atoi(limit)
-	if err != nil || data.Limit < 1 {
-		data.Limit = pageSize
-	}
-	data.NumberOfPage, err = h.service.GetPageNumber(data.Limit, data.Category_id)
-	if err != nil {
-		return nil, err
-	}
-	data.CurrentPage, err = strconv.Atoi(currentPageStr)
-	if err != nil || data.CurrentPage < 1 || data.CurrentPage > data.NumberOfPage {
-		data.CurrentPage = defaultPage
-	}
-
-	return data, nil
 }

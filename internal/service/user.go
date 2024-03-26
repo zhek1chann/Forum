@@ -22,6 +22,10 @@ func (s *service) DeleteSession(token string) error {
 	return nil
 }
 
+func (s *service) ValidToken(token string) (bool, error) {
+	return s.repo.IsValidToken(token)
+}
+
 func (s *service) Authenticate(email string, password string) (*models.Session, error) {
 	userID, err := s.repo.Authenticate(email, password)
 	if err != nil {
