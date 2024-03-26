@@ -20,7 +20,7 @@ func NewDB(storagePath string) (*Sqlite, error) {
 	tableCreationQueries := []string{
 		`CREATE TABLE IF NOT EXISTS users (
 			id INTEGER PRIMARY KEY,
-			name TEXT NOT NULL,
+			name TEXT NOT NULL UNIQUE,
 			email TEXT NOT NULL UNIQUE,
 			hashed_password TEXT NOT NULL,
 			created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

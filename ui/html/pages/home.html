@@ -19,7 +19,8 @@ Home
 {{$url := .URL}}
 <!-- <h2 class="headerPosts">Posts</h2> -->
 <div class="posts-container">
-    {{range .Posts}}
+{{with .Posts}}
+    {{range .}}
         <div class="post-card">
             <div class="card-header">
                 <div class="user-data">
@@ -73,6 +74,9 @@ Home
             </div>
         </div>
     {{end}}
+{{else}}
+<div>Nothing here yet! Thats better...</div>
+{{end}}
 </div>
 
 <div class="pagination">

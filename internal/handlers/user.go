@@ -89,7 +89,9 @@ func (h *handler) signupPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	form.CheckField(validator.NotBlank(form.Name), "name", "This field cannot be blank")
+	form.CheckField(validator.MaxChars(form.Name, 12), "name", "This field must be 12 characters long maximum")
 	form.CheckField(validator.NotBlank(form.Email), "email", "This field cannot be blank")
+	form.CheckField(validator.IsEmail(form.Email), "email", "This field must be an email")
 	form.CheckField(validator.NotBlank(form.Password), "password", "This field cannot be blank")
 	form.CheckField(validator.MinChars(form.Password, 8), "password", "This field must be at least 8 characters long")
 
@@ -108,6 +110,14 @@ func (h *handler) signupPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if errors.Is(err, models.ErrDuplicateEmail) {
 			form.AddFieldError("email", "Email address is already in use")
+			data, err := h.NewTemplateData(r)
+			if err != nil {
+				h.app.ServerError(w, err)
+			}
+			data.Form = form
+			h.app.Render(w, http.StatusUnprocessableEntity, "signup.html", data)
+		} else if errors.Is(err, models.ErrDuplicateName) {
+			form.AddFieldError("name", "Name is already in use")
 			data, err := h.NewTemplateData(r)
 			if err != nil {
 				h.app.ServerError(w, err)

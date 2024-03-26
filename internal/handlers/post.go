@@ -116,7 +116,6 @@ func (h *handler) postView(w http.ResponseWriter, r *http.Request) {
 	h.app.Render(w, http.StatusOK, "post.html", data)
 }
 
-
 func (h *handler) PostByUser(w http.ResponseWriter, r *http.Request) {
 	data, err := h.NewTemplateData(r)
 	if err != nil {
@@ -154,6 +153,10 @@ func (h *handler) PostByUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		data.Posts = h.service.IsLikedPost(data.Posts, reactions)
+	}
+
+	if len(*data.Posts) == 0 {
+		data.Posts = nil
 	}
 
 	h.app.Render(w, http.StatusOK, "home.html", data)
@@ -196,6 +199,10 @@ func (h *handler) LikedPosts(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		data.Posts = h.service.IsLikedPost(data.Posts, reactions)
+	}
+
+	if len(*data.Posts) == 0 {
+		data.Posts = nil
 	}
 
 	h.app.Render(w, http.StatusOK, "home.html", data)

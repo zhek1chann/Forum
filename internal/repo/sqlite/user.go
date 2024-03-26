@@ -14,7 +14,6 @@ func (s *Sqlite) GetUserByEmail(email string) (*models.User, error) {
 	var u models.User
 	stmt := `SELECT id, name, email, created FROM users WHERE id=?`
 	err := s.db.QueryRow(stmt, email).Scan(&u.ID, &u.Name, &u.Email, &u.Created)
-
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, models.ErrNoRecord
@@ -22,7 +21,6 @@ func (s *Sqlite) GetUserByEmail(email string) (*models.User, error) {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	return &u, nil
-
 }
 
 func (s *Sqlite) UpdateUserByID(string) (*models.User, error) { return nil, nil }
@@ -34,6 +32,9 @@ func (s *Sqlite) CreateUser(u models.User) error {
 	if err != nil {
 		if err.Error() == "UNIQUE constraint failed: users.email" {
 			return models.ErrDuplicateEmail
+		}
+		if err.Error() == "UNIQUE constraint failed: users.name" {
+			return models.ErrDuplicateName
 		}
 		return fmt.Errorf("%s: %w", op, err)
 	}
