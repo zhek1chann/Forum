@@ -13,7 +13,7 @@
     <div class='post-footer'>
         <div class="postCategory">
             {{range $category := .Post.Categories}}
-            <div class="categoryFooter">{{$category}}</div>
+            <a href="/?category={{toLower $category}}" class="category-footer"><p class="categoryFooter">{{$category}}</p></a>
             {{end}}
         </div>
         <form action="/post/reaction" method="POST">
@@ -52,7 +52,7 @@
         <label class="error">{{.}}</label>
         {{end}}
         <div class="comment-input">
-        <input type="text" name="comment" placeholder="Noone wants your comment" class="newcominput">
+        <input type="text" name="comment" placeholder="No one wants your comment" class="newcominput">
         <input type="submit" value="Comment" class="comment-submit">
         <input type="hidden" name="postID" value="{{.Post.PostID}}">
     </div>
