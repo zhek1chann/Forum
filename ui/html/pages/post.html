@@ -47,12 +47,15 @@
 <div class="new-comment">
 
     <form action="/comment/post" method="POST" class="comment-form">
+        
         {{with .Form.FieldErrors.comment}}
         <label class="error">{{.}}</label>
         {{end}}
+        <div class="comment-input">
         <input type="text" name="comment" placeholder="Noone wants your comment" class="newcominput">
         <input type="submit" value="Comment" class="comment-submit">
         <input type="hidden" name="postID" value="{{.Post.PostID}}">
+    </div>
     </form>
 </div>
     {{with .Post.Comment}}

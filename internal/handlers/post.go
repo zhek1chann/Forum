@@ -39,7 +39,7 @@ func (h *handler) postCreatePost(w http.ResponseWriter, r *http.Request) {
 
 	form.CheckField(validator.NotBlank(form.Title), "title", "This field cannot be blank")
 	form.CheckField(validator.NotBlank(form.Content), "content", "This field cannot be blank")
-	form.CheckField(validator.NotSelected(form.CategoriesString), "categories", "This field cannot be selected")
+	form.CheckField(validator.NotSelected(form.CategoriesString), "categories", "At least one must be selected")
 	form.CheckField(validator.IsError(form.ConverCategories()), "categories", "This field is incoreted")
 
 	if !form.Valid() {

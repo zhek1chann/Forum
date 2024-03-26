@@ -287,7 +287,7 @@ footer {
 }
 
 .body {
-    margin-top: 151px;
+    padding-top: 151px;
 }
 
 
@@ -396,6 +396,7 @@ footer {
 
 .category-label{
     margin-bottom: 5px;
+    font-size: larger;
 }
 
 .postCategory{
@@ -489,6 +490,11 @@ footer {
 
 .comment-form{
     display: flex;
+    flex-direction: column;
+}
+
+.comment-input{
+    display: flex;
 }
 
 .comment-header{
@@ -548,7 +554,29 @@ footer {
     display: block;
     padding: 20px 0 80px;
     background-color: #F1F3F6;
-  }
+    width: 1104px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.pages{
+    align-self: center;
+}
+
+.ppp{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.label-pages{
+margin: 0;
+margin-right: 7px;
+}
+
+.button-pages{
+    margin: 0 !important;
+}
 
   .reactionContainer{
     margin-bottom: 0;
@@ -576,13 +604,27 @@ footer {
     flex-direction: column;
   }
 
-
+  .user-name{
+    font-size: larger;
+  }
 
   .user-menu{
     margin-top: 15px;
     list-style: none;
   }
 
+
+  .category-footer:hover{
+    text-decoration:none;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #34495E;
+    border-radius: 5px;
+  }
+
+  .create-categories{
+    margin-right:10px;
+  }
 
   @media screen and (max-width: 2500px) {
       .left{
@@ -606,11 +648,25 @@ footer {
     main{
         max-width: 950px;
     }
+    .pagination{
+        width: 854px;
+    }
 }
+
+.post-create-title{margin-bottom: 30px;}
+.post-create-content{margin-bottom: 40px;}
+.post-create-category{margin-bottom: 20px;}
+.post-content-input{resize: none;}
+.post-create-button{padding: 10px 15px !important;}
+
 
 @media screen and (max-width: 1250px) {
     main{
         max-width: 600px;
+    }
+
+    .pagination{
+        width: 504px;
     }
 
     .post-footer{

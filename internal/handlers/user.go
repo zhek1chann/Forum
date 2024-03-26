@@ -16,6 +16,12 @@ func (h *handler) loginGet(w http.ResponseWriter, r *http.Request) {
 	data, err := h.NewTemplateData(r)
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
+	}
+	data.Categories, err = h.service.GetAllCategory()
+	if err != nil {
+		h.app.ServerError(w, err)
+		return
 	}
 	data.Form = models.UserLoginForm{}
 	h.app.Render(w, http.StatusOK, "login.html", data)
@@ -76,6 +82,12 @@ func (h *handler) signupGet(w http.ResponseWriter, r *http.Request) {
 	data, err := h.NewTemplateData(r)
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
+	}
+	data.Categories, err = h.service.GetAllCategory()
+	if err != nil {
+		h.app.ServerError(w, err)
+		return
 	}
 	data.Form = models.UserSignupForm{}
 	h.app.Render(w, http.StatusOK, "signup.html", data)
