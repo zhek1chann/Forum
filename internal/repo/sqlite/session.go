@@ -45,7 +45,6 @@ func (s *Sqlite) IsValidToken(token string) (bool, error) {
 	}
 
 	if !expTime.After(time.Now()) {
-		fmt.Println("loooooooooooooox")
 		return false, nil
 	}
 	return true, nil

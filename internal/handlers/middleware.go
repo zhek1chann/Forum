@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"forum/models"
 	"forum/pkg/cookie"
 	"net/http"
@@ -16,7 +15,6 @@ const isAuthenticatedContextKey = contextKey("isAuthenticated")
 
 // }
 func methodResolver(w http.ResponseWriter, r *http.Request, get, post func(w http.ResponseWriter, r *http.Request)) {
-	fmt.Println(r.URL)
 	switch r.Method {
 	case http.MethodGet:
 		get(w, r)
@@ -38,7 +36,7 @@ func (h *handler) requireAuthentication(next http.HandlerFunc) http.HandlerFunc 
 			return
 		}
 
-		isValid, err := h.service.ValidToken(c.Path)
+		isValid, err := h.service.ValidToken(c.Value)
 		if err != nil {
 			h.app.ServerError(w, err)
 			return

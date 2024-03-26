@@ -1,7 +1,22 @@
-{{define "title"}}Home {{end}}
+{{define "title"}}
+{{with .Category}}
+{{.}} 
+{{else}}
+{{if eq .URL "/user/liked"}}
+Liked Posts 
+{{else}}
+{{if eq .URL "/user/posts"}}
+My Posts 
+{{else}}
+Home 
+{{end}}
+{{end}}
+{{end}}
+{{end}}
 {{define "main"}}
 
 {{$isAuth := .IsAuthenticated}}
+{{$url := .URL}}
 <!-- <h2 class="headerPosts">Posts</h2> -->
 <div class="posts-container">
     {{range .Posts}}
@@ -91,11 +106,11 @@
     {{ end }}
     <input type="hidden" id="category" name="category" value="{{$category}}">
         {{with $category}}
-    <form action="/?category={{toLower $category}}&page=1">
-    <input type="hidden" id="category" name="category" value="{{$category}}">
-        {{else}}
-    <form action="/">
+        <form action="/?category={{toLower $category}}&page=1">
         <input type="hidden" id="category" name="category" value="{{$category}}">
+        {{else}}
+        <form action="{{$url}}">
+
         {{end}}
         <select id="limit" name="limit">
             <option value="3">3</option>
@@ -103,7 +118,7 @@
             <option value="5" selected>5</option>
             <option value="6">6</option>
             <option value="7">7</option>
-            <option value="99999999">all</option>
+            <option value="all">all</option>
         </select>
         <input type="submit" value="ok">
     </form>

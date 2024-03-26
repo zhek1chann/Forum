@@ -14,4 +14,5 @@ type TemplateData struct {
 	Limit           int
 	Category        string
 	Category_id     int
+	URL             string
 }

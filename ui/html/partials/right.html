@@ -10,8 +10,16 @@
                
                 {{end}}
             <ul class="user-menu">
+                {{if eq .URL "/user/posts"}}
+                <li class="chosenCategory">My Posts</li>
+                {{else}}
                 <li><a href="/user/posts">My Posts</a></li>
+                {{end}}
+                {{if eq .URL "/user/liked"}}
+                <li class="chosenCategory">Liked Posts</li>
+                {{else}}
                 <li><a href="/user/liked">Liked Posts</a></li>
+                {{end}}
                 <li class="logoutButton">
                     <form action="/logout" method="POST">
                         <!-- <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'> -->

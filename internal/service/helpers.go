@@ -24,10 +24,6 @@ func (s *service) SetUpPage(data *models.TemplateData, r *http.Request) (*models
 	currentPageStr := r.URL.Query().Get("page")
 	limit := r.URL.Query().Get("limit")
 	data.Category = strings.Title(r.URL.Query().Get("category"))
-	if len(data.Category) == 0 {
-		data.Category = r.FormValue("category")
-	}
-
 	data.Categories, err = s.GetAllCategory()
 	if err != nil {
 		return nil, err
@@ -43,13 +39,18 @@ func (s *service) SetUpPage(data *models.TemplateData, r *http.Request) (*models
 			return nil, models.ErrNoRecord
 		}
 	}
-	data.Limit, err = strconv.Atoi(limit)
+	if limit=="all"{
+		data.Limit=9999
+	}else{
+		data.Limit, err = strconv.Atoi(limit)
+	}
+
 	if err != nil || data.Limit < 1 {
 		data.Limit = pageSize
 	}
-	if strings.Contains(r.URL.Path, "/user/posts") {
+	if r.URL.Path == "/user/posts" {
 		data.NumberOfPage, err = s.repo.GetPageNumberMyPosts(data.Limit, int(data.User.ID))
-	} else if strings.Contains(r.URL.Path, "/user/liked") {
+	} else if r.URL.Path == "/user/liked" {
 		data.NumberOfPage, err = s.repo.GetPageNumberLikedPosts(data.Limit, int(data.User.ID))
 	} else {
 		data.NumberOfPage, err = s.repo.GetPageNumber(data.Limit, data.Category_id)
@@ -62,6 +63,6 @@ func (s *service) SetUpPage(data *models.TemplateData, r *http.Request) (*models
 	if err != nil || data.CurrentPage < 1 || data.CurrentPage > data.NumberOfPage {
 		data.CurrentPage = defaultPage
 	}
-
+	data.URL = r.URL.Path
 	return data, nil
 }

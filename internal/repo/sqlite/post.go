@@ -239,7 +239,6 @@ func (s *Sqlite) GetPageNumberLikedPosts(pageSize int, userID int) (int, error) 
 	JOIN users u ON p.user_id = u.id
 	JOIN post_user_Like l ON p.id = l.post_id
 	WHERE l.user_id = ? AND l.is_like = TRUE
-	GROUP BY p.id
 	`
 	err := s.db.QueryRow(stmt, userID).Scan(&totalPosts)
 	if err != nil {
