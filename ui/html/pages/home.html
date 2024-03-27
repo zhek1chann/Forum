@@ -1,7 +1,8 @@
 {{define "title"}} {{with .Category}} {{.}} {{else}} {{if eq .URL
 "/user/liked"}} Liked Posts {{else}} {{if eq .URL "/user/posts"}} My Posts
 {{else}} Home {{end}} {{end}} {{end}} {{end}} {{define "main"}} {{$isAuth :=
-.IsAuthenticated}} {{$url := .URL}}
+.IsAuthenticated}} {{$url := .URL}} {{$limitRange := .LimitRange}} {{$limitStr
+:= .LimitStr }}
 <!-- <h2 class="headerPosts">Posts</h2> -->
 <div class="posts-container">
   {{with .Posts}} {{range .}}
@@ -75,8 +76,8 @@
 
 <div class="pagination">
   <div class="pages">
-    {{ $currentPage := .CurrentPage }} {{ $limit := .Limit }} {{ $category
-    := .Category}} {{ if gt $currentPage 1 }} {{with $category}}
+    {{ $currentPage := .CurrentPage }} {{ $limit := .Limit }} {{ $category :=
+    .Category}} {{ if gt $currentPage 1 }} {{with $category}}
     <a
       href="?category={{toLower $category}}&page={{sub $currentPage 1}}&limit={{$limit}}"
       class="previous"
@@ -119,12 +120,11 @@
     />
     <label for="limit" class="label-pages">posts per page: </label>
     <select id="limit" name="limit">
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5" selected>5</option>
-      <option value="6">6</option>
-      <option value="7">7</option>
-      <option value="all">all</option>
+      {{range $limitNum := $limitRange}} {{if eq $limitNum $limitStr}}
+      <option value="{{.}}" selected>{{.}}</option>
+      {{else}}
+      <option value="{{.}}">{{.}}</option>
+      {{end}} {{end}}
     </select>
     <input type="submit" value="ok" class="button-pages" />
   </form>
@@ -132,12 +132,12 @@
   <form action="{{toLower $url}}">
     <label for="limit" class="label-pages">posts per page: </label>
     <select id="limit" name="limit">
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5" selected>5</option>
-      <option value="6">6</option>
-      <option value="7">7</option>
-      <option value="all">all</option>
+      {{range $limitNum := $limitRange}} {{if eq $limitNum $limitStr}}
+      <option value="{{.}}" selected>{{.}}</option>
+      {{else}}
+      <option value="{{.}}">{{.}}</option>
+      {{end}} {{end}}
+      
     </select>
     <input type="submit" value="ok" class="button-pages" />
   </form>

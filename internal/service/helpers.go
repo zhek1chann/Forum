@@ -22,7 +22,10 @@ func AddCategory(arr []int) []int {
 func (s *service) SetUpPage(data *models.TemplateData, r *http.Request) (*models.TemplateData, error) {
 	var err error
 	currentPageStr := r.URL.Query().Get("page")
-	limit := r.URL.Query().Get("limit")
+	data.LimitStr = r.URL.Query().Get("limit")
+	if data.LimitStr==""{
+		data.LimitStr="5"
+	}
 	data.Category = strings.Title(r.URL.Query().Get("category"))
 	data.Categories, err = s.GetAllCategory()
 	if err != nil {
@@ -39,10 +42,10 @@ func (s *service) SetUpPage(data *models.TemplateData, r *http.Request) (*models
 			return nil, models.ErrNoRecord
 		}
 	}
-	if limit=="all"{
+	if data.LimitStr=="all"{
 		data.Limit=9999
 	}else{
-		data.Limit, err = strconv.Atoi(limit)
+		data.Limit, err = strconv.Atoi(data.LimitStr)
 	}
 
 	if err != nil || data.Limit < 1 {
@@ -64,5 +67,6 @@ func (s *service) SetUpPage(data *models.TemplateData, r *http.Request) (*models
 		data.CurrentPage = defaultPage
 	}
 	data.URL = r.URL.Path
+	data.LimitRange=append(data.LimitRange, "3","4","5","6","7","all")
 	return data, nil
 }

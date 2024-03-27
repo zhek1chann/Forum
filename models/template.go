@@ -12,7 +12,9 @@ type TemplateData struct {
 	NumberOfPage    int
 	CurrentPage     int
 	Limit           int
+	LimitStr		string
 	Category        string
 	Category_id     int
 	URL             string
+	LimitRange   	[]string
 }
