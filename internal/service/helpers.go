@@ -12,6 +12,8 @@ const (
 	defaultPage = 1
 )
 
+var limitVariation = []int{5, 10, 15, 20, 50}
+
 func AddCategory(arr []int) []int {
 	for i, nb := range arr {
 		arr[i] = nb + 1
@@ -22,10 +24,8 @@ func AddCategory(arr []int) []int {
 func (s *service) SetUpPage(data *models.TemplateData, r *http.Request) (*models.TemplateData, error) {
 	var err error
 	currentPageStr := r.URL.Query().Get("page")
-	data.LimitStr = r.URL.Query().Get("limit")
-	if data.LimitStr==""{
-		data.LimitStr="5"
-	}
+	data.Limit = validateLimit(r.URL.Query().Get("limit"))
+
 	data.Category = strings.Title(r.URL.Query().Get("category"))
 	data.Categories, err = s.GetAllCategory()
 	if err != nil {
@@ -42,15 +42,7 @@ func (s *service) SetUpPage(data *models.TemplateData, r *http.Request) (*models
 			return nil, models.ErrNoRecord
 		}
 	}
-	if data.LimitStr=="all"{
-		data.Limit=9999
-	}else{
-		data.Limit, err = strconv.Atoi(data.LimitStr)
-	}
 
-	if err != nil || data.Limit < 1 {
-		data.Limit = pageSize
-	}
 	if r.URL.Path == "/user/posts" {
 		data.NumberOfPage, err = s.repo.GetPageNumberMyPosts(data.Limit, int(data.User.ID))
 	} else if r.URL.Path == "/user/liked" {
@@ -67,6 +59,17 @@ func (s *service) SetUpPage(data *models.TemplateData, r *http.Request) (*models
 		data.CurrentPage = defaultPage
 	}
 	data.URL = r.URL.Path
-	data.LimitRange=append(data.LimitRange, "3","4","5","6","7","all")
+	data.LimitVariation = limitVariation
 	return data, nil
+}
+
+func validateLimit(limitStr string) int {
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		limit = pageSize
+	}
+	if limit < 0 {
+		limit = pageSize
+	}
+	return limit
 }

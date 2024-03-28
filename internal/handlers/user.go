@@ -9,6 +9,10 @@ import (
 )
 
 func (h *handler) login(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/login" {
+		h.app.NotFound(w)
+		return
+	}
 	methodResolver(w, r, h.loginGet, h.loginPost)
 }
 
@@ -75,6 +79,10 @@ func (h *handler) loginPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) signup(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/signup" {
+		h.app.NotFound(w)
+		return
+	}
 	methodResolver(w, r, h.signupGet, h.signupPost)
 }
 
@@ -145,6 +153,10 @@ func (h *handler) signupPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) logoutPost(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/logout" {
+		h.app.NotFound(w)
+		return
+	}
 	c := cookie.GetSessionCookie(r)
 	if c != nil {
 		h.service.DeleteSession(c.Value)

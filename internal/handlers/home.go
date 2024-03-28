@@ -9,6 +9,15 @@ import (
 )
 
 func (h *handler) home(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		h.app.NotFound(w)
+		return
+	}
+
+	if r.Method != http.MethodGet {
+		h.app.ClientError(w, http.StatusMethodNotAllowed)
+	}
+
 	data, err := h.NewTemplateData(r)
 	if err != nil {
 		h.app.ServerError(w, err)
@@ -56,32 +65,6 @@ func (h *handler) home(w http.ResponseWriter, r *http.Request) {
 	h.app.Render(w, http.StatusOK, "home.html", data)
 	return
 }
-
-// func (h *handler) homePost(w http.ResponseWriter, r *http.Request) {
-// 	if err := r.ParseForm(); err != nil {
-// 		h.app.ClientError(w, http.StatusBadRequest)
-// 		return
-// 	}
-
-// 	filterCategoriesString := r.Form["categories"]
-// 	filterCategories, err := ConverCategories(filterCategoriesString)
-// 	if err != nil {
-// 		h.app.ClientError(w, http.StatusBadRequest)
-// 	}
-// 	posts, err := h.service.GetAllPostByCategories(filterCategories)
-// 	if err != nil {
-// 		h.app.ServerError(w, err)
-// 	}
-// 	data := h.NewTemplateData(r)
-
-// 	data.Categories, err = h.service.GetAllCategory()
-// 	if err != nil {
-// 		h.app.ServerError(w, err)
-// 	}
-
-// 	data.Posts = posts
-// 	h.app.Render(w, http.StatusOK, "home.html", data)
-// }
 
 func ConverCategories(CategoriesString []string) ([]int, error) {
 	categories := make([]int, len(CategoriesString))

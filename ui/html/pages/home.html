@@ -1,8 +1,7 @@
 {{define "title"}} {{with .Category}} {{.}} {{else}} {{if eq .URL
 "/user/liked"}} Liked Posts {{else}} {{if eq .URL "/user/posts"}} My Posts
 {{else}} Home {{end}} {{end}} {{end}} {{end}} {{define "main"}} {{$isAuth :=
-.IsAuthenticated}} {{$url := .URL}} {{$limitRange := .LimitRange}} {{$limitStr
-:= .LimitStr }}
+.IsAuthenticated}} {{$url := .URL}} {{$limitVariaton := .LimitVariation}}
 <!-- <h2 class="headerPosts">Posts</h2> -->
 <div class="posts-container">
   {{with .Posts}} {{range .}}
@@ -120,7 +119,7 @@
     />
     <label for="limit" class="label-pages">posts per page: </label>
     <select id="limit" name="limit">
-      {{range $limitNum := $limitRange}} {{if eq $limitNum $limitStr}}
+      {{range $limitVariaton}} {{if eq . $limit}}
       <option value="{{.}}" selected>{{.}}</option>
       {{else}}
       <option value="{{.}}">{{.}}</option>
@@ -132,7 +131,7 @@
   <form action="{{toLower $url}}">
     <label for="limit" class="label-pages">posts per page: </label>
     <select id="limit" name="limit">
-      {{range $limitNum := $limitRange}} {{if eq $limitNum $limitStr}}
+      {{range $limitVariaton}} {{if eq . $limit}}
       <option value="{{.}}" selected>{{.}}</option>
       {{else}}
       <option value="{{.}}">{{.}}</option>

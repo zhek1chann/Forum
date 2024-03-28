@@ -12,6 +12,10 @@ import (
 )
 
 func (h *handler) postCreate(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/post/create" {
+		h.app.NotFound(w)
+		return
+	}
 	methodResolver(w, r, h.postCreateGet, h.postCreatePost)
 }
 
@@ -20,12 +24,14 @@ func (h *handler) postCreateGet(w http.ResponseWriter, r *http.Request) {
 	data, err := h.NewTemplateData(r)
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
 	}
 
 	data.Form = models.PostForm{}
 	data.Categories, err = h.service.GetAllCategory()
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
 	}
 	h.app.Render(w, http.StatusOK, "create.html", data)
 }
@@ -60,6 +66,7 @@ func (h *handler) postCreatePost(w http.ResponseWriter, r *http.Request) {
 	postID, err := h.service.CreatePost(form.Title, form.Content, cookie_.Value, form.Categories)
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
 	}
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", postID), http.StatusSeeOther)
 }
@@ -67,8 +74,9 @@ func (h *handler) postCreatePost(w http.ResponseWriter, r *http.Request) {
 func (h *handler) postView(w http.ResponseWriter, r *http.Request) {
 	id, _ := strings.CutPrefix(r.URL.Path, "/post/")
 	ID, err := strconv.Atoi(id)
-	if err != nil {
+	if err != nil || ID < 1 || id[0] == '0' {
 		h.app.ClientError(w, 400)
+		return
 	}
 
 	post, err := h.service.GetPostByID(ID)
@@ -84,6 +92,7 @@ func (h *handler) postView(w http.ResponseWriter, r *http.Request) {
 	data, err := h.NewTemplateData(r)
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
 	}
 	data.Post = post
 	token := cookie.GetSessionCookie(r)
@@ -112,24 +121,29 @@ func (h *handler) postView(w http.ResponseWriter, r *http.Request) {
 	data.Categories, err = h.service.GetAllCategory()
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
 	}
 	h.app.Render(w, http.StatusOK, "post.html", data)
 }
 
 func (h *handler) PostByUser(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/user/posts" {
+		h.app.NotFound(w)
+		return
+	}
 	data, err := h.NewTemplateData(r)
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
 	}
 	data, err = h.service.SetUpPage(data, r)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			h.app.NotFound(w)
-			return
 		} else {
 			h.app.ServerError(w, err)
-			return
 		}
+		return
 	}
 	c := cookie.GetSessionCookie(r)
 	posts, err := h.service.GetAllPostByUserPaginated(c.Value, data.CurrentPage, data.Limit)
@@ -141,6 +155,7 @@ func (h *handler) PostByUser(w http.ResponseWriter, r *http.Request) {
 	data.Categories, err = h.service.GetAllCategory()
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
 	}
 
 	data.Posts = posts
@@ -163,19 +178,23 @@ func (h *handler) PostByUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) LikedPosts(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/user/liked" {
+		h.app.NotFound(w)
+		return
+	}
 	data, err := h.NewTemplateData(r)
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
 	}
 	data, err = h.service.SetUpPage(data, r)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			h.app.NotFound(w)
-			return
 		} else {
 			h.app.ServerError(w, err)
-			return
 		}
+		return
 	}
 	c := cookie.GetSessionCookie(r)
 	posts, err := h.service.GetLikedPostsPaginated(c.Value, data.CurrentPage, data.Limit)
@@ -187,6 +206,7 @@ func (h *handler) LikedPosts(w http.ResponseWriter, r *http.Request) {
 	data.Categories, err = h.service.GetAllCategory()
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
 	}
 
 	data.Posts = posts

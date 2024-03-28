@@ -11,6 +11,10 @@ import (
 )
 
 func (h *handler) postReaction(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/post/reaction" {
+		h.app.NotFound(w)
+		return
+	}
 	if r.Method != http.MethodPost {
 		h.app.ClientError(w, http.StatusBadRequest)
 		return
@@ -51,6 +55,10 @@ func (h *handler) postReaction(w http.ResponseWriter, r *http.Request) {
 
 func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 	var err error
+	if r.URL.Path != "/comment/post" {
+		h.app.NotFound(w)
+		return
+	}
 	if r.Method != http.MethodPost {
 		h.app.ClientError(w, http.StatusBadRequest)
 		return
@@ -73,7 +81,7 @@ func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 	form.CheckField(validator.MaxChars(form.Content, 50), "comment", "This field must be maximum 50 characters")
 
 	if !form.Valid() {
-		data,err := h.NewTemplateData(r)
+		data, err := h.NewTemplateData(r)
 		if err != nil {
 			h.app.ServerError(w, err)
 		}
@@ -111,6 +119,10 @@ func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) commentReaction(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/comment/reaction" {
+		h.app.NotFound(w)
+		return
+	}
 	if r.Method != http.MethodPost {
 		h.app.ClientError(w, http.StatusBadRequest)
 		return
