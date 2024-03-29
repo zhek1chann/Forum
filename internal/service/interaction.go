@@ -20,6 +20,10 @@ func (s *service) PostReaction(form models.ReactionForm) error {
 	if err != nil {
 		return err
 	}
+	ok := s.repo.CheckPostExists(form.ID)
+	if !ok {
+		return models.ErrNoRecord
+	}
 	exists, isLike, err := s.repo.GetReactionPost(form.UserID, form.ID)
 	if err != nil {
 		return err
@@ -47,6 +51,11 @@ func (s *service) CommentReaction(form models.ReactionForm) error {
 	form.UserID, err = s.repo.GetUserIDByToken(form.Token)
 	if err != nil {
 		return err
+	}
+	ok := s.repo.CheckPostExists(form.ID)
+
+	if !ok {
+		return models.ErrNoRecord
 	}
 
 	exists, isLike, err := s.repo.CheckReactionComment(form)

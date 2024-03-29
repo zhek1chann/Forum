@@ -7,6 +7,16 @@ import (
 	"forum/models"
 )
 
+func (s *Sqlite) CheckPostExists(postID int) bool {
+	var isExists bool
+	checkQuery := `SELECT EXISTS(SELECT id FROM posts WHERE id = ?)`
+	err := s.db.QueryRow(checkQuery, postID).Scan(&isExists)
+	if err != nil {
+		return false
+	}
+	return isExists
+}
+
 func (s *Sqlite) CreatePost(userID int, title, content, imageName string) (int, error) {
 	op := "sqlite.CreatePost"
 	const query = `INSERT INTO posts (user_id, title, content, image_name) VALUES (?, ?, ?, ?)`

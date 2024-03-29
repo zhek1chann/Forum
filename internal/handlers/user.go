@@ -49,7 +49,7 @@ func (h *handler) loginPost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		data.Form = form
-		h.app.Render(w, http.StatusUnprocessableEntity, "signup.html", data)
+		h.app.Render(w, http.StatusUnprocessableEntity, "login.html", data)
 		return
 	}
 

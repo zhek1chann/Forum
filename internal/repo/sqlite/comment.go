@@ -5,6 +5,18 @@ import (
 	"forum/models"
 )
 
+func (s *Sqlite) CheckcCommentExists(commentID int) bool {
+	var isExists bool
+	checkQuery := `SELECT EXISTS(SELECT id FROM comments WHERE id = ?)`
+	err := s.db.QueryRow(checkQuery, commentID).Scan(&isExists)
+	if err != nil {
+		fmt.Println(1)
+		return false
+	}
+	fmt.Println(isExists)
+	return isExists
+}
+
 func (s *Sqlite) CommentPost(form models.CommentForm) error {
 	op := "sqlite.CommentPost"
 	stmt := `INSERT INTO Comments (post_id, user_id, content, created) VALUES(?, ?, ?, CURRENT_TIMESTAMP)`
@@ -39,26 +51,6 @@ func (s *Sqlite) GetCommentsByPostID(postID int) (*[]models.Comment, error) {
 }
 
 // like system
-
-func (s *Sqlite) CheckReactionComment(form models.ReactionForm) (bool, bool, error) {
-	// Check if the user has already liked/disliked the post
-	var isExists bool
-	checkQuery := `SELECT EXISTS(SELECT is_like FROM Comment_User_Like WHERE user_id = ? AND comment_id = ?)`
-	err := s.db.QueryRow(checkQuery, form.UserID, form.ID).Scan(&isExists)
-	if err != nil {
-		return false, false, err
-	}
-	var dbLike bool
-	if isExists {
-		checkQuery = `SELECT is_like FROM Comment_User_Like WHERE user_id = ? AND comment_id = ?`
-		err = s.db.QueryRow(checkQuery, form.UserID, form.ID).Scan(&dbLike)
-		if err != nil {
-			return false, false, err
-		}
-	}
-
-	return isExists, dbLike, nil
-}
 
 func (s *Sqlite) AddReactionComment(form models.ReactionForm) error {
 	tx, err := s.db.Begin()

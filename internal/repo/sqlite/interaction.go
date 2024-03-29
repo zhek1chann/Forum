@@ -132,3 +132,22 @@ func (s *Sqlite) GetReactionPosts(userID int) (map[int]bool, error) {
 }
 
 
+func (s *Sqlite) CheckReactionComment(form models.ReactionForm) (bool, bool, error) {
+	// Check if the user has already liked/disliked the post
+	var isExists bool
+	checkQuery := `SELECT EXISTS(SELECT is_like FROM Comment_User_Like WHERE user_id = ? AND comment_id = ?)`
+	err := s.db.QueryRow(checkQuery, form.UserID, form.ID).Scan(&isExists)
+	if err != nil {
+		return false, false, err
+	}
+	var dbLike bool
+	if isExists {
+		checkQuery = `SELECT is_like FROM Comment_User_Like WHERE user_id = ? AND comment_id = ?`
+		err = s.db.QueryRow(checkQuery, form.UserID, form.ID).Scan(&dbLike)
+		if err != nil {
+			return false, false, err
+		}
+	}
+
+	return isExists, dbLike, nil
+}

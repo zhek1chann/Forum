@@ -24,7 +24,7 @@ func (h *handler) postReaction(w http.ResponseWriter, r *http.Request) {
 		h.app.ServerError(w, err)
 		return
 	}
-	url := strings.TrimPrefix(r.Header.Get("Referer"), r.Header.Get("Origin"))
+
 	token := cookie.GetSessionCookie(r)
 	postID, err := GetIntForm(r, "postID")
 	if err != nil {
@@ -48,9 +48,15 @@ func (h *handler) postReaction(w http.ResponseWriter, r *http.Request) {
 	}
 	err = h.service.PostReaction(form)
 	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			h.app.ClientError(w, http.StatusBadRequest)
+			return
+		}
 		h.app.ServerError(w, err)
 		return
 	}
+	url := strings.TrimPrefix(r.Header.Get("Referer"), r.Header.Get("Origin"))
+
 	http.Redirect(w, r, url, http.StatusSeeOther)
 }
 
@@ -167,8 +173,13 @@ func (h *handler) commentReaction(w http.ResponseWriter, r *http.Request) {
 	}
 	err = h.service.CommentReaction(form)
 	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			h.app.ClientError(w, http.StatusBadRequest)
+			return
+		}
 		h.app.ServerError(w, err)
 		return
 	}
+	fmt.Println(3)
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", postID), http.StatusSeeOther)
 }

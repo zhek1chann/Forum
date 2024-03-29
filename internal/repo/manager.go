@@ -35,6 +35,7 @@ type PostRepo interface {
 	GetAllPostByCategoryPaginated(page int, pageSize int, category int) (*[]models.Post, error)
 	GetPageNumberLikedPosts(pageSize int, userID int) (int, error)
 	GetPageNumberMyPosts(pageSize int, userID int) (int, error)
+	CheckPostExists(postID int) bool
 }
 
 type InteractionRepo interface {
@@ -58,6 +59,7 @@ type CommentRepo interface {
 	CheckReactionComment(form models.ReactionForm) (bool, bool, error)
 	AddReactionComment(form models.ReactionForm) error
 	DeleteReactionComment(form models.ReactionForm, isLike bool) error
+	CheckcCommentExists(commentID int) bool
 }
 
 type RepoI interface {
