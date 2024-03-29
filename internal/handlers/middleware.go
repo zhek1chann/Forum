@@ -118,3 +118,16 @@ func (h *handler) isAuthenticated(r *http.Request) bool {
 	cookie := cookie.GetSessionCookie(r)
 	return cookie != nil && cookie.Value != ""
 }
+
+func ConverCategories(CategoriesString []string) ([]int, error) {
+	categories := make([]int, len(CategoriesString))
+	for i, str := range CategoriesString {
+		nb, err := strconv.Atoi(str)
+		if err != nil {
+			return nil, err
+		}
+		categories[i] = nb
+	}
+
+	return categories, nil
+}

@@ -10,6 +10,7 @@ func (s *service) CommentPost(form models.CommentForm) error {
 	if err != nil {
 		return err
 	}
+	trim(&form.Content)
 	return s.repo.CommentPost(form)
 }
 

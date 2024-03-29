@@ -5,7 +5,6 @@ import (
 	"forum/models"
 	"forum/pkg/cookie"
 	"net/http"
-	"strconv"
 )
 
 func (h *handler) home(w http.ResponseWriter, r *http.Request) {
@@ -16,11 +15,13 @@ func (h *handler) home(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodGet {
 		h.app.ClientError(w, http.StatusMethodNotAllowed)
+		return
 	}
 
 	data, err := h.NewTemplateData(r)
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
 	}
 	data, err = h.service.SetUpPage(data, r)
 	if err != nil {
@@ -64,17 +65,4 @@ func (h *handler) home(w http.ResponseWriter, r *http.Request) {
 
 	h.app.Render(w, http.StatusOK, "home.html", data)
 	return
-}
-
-func ConverCategories(CategoriesString []string) ([]int, error) {
-	categories := make([]int, len(CategoriesString))
-	for i, str := range CategoriesString {
-		nb, err := strconv.Atoi(str)
-		if err != nil {
-			return nil, err
-		}
-		categories[i] = nb
-	}
-
-	return categories, nil
 }

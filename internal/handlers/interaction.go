@@ -29,6 +29,7 @@ func (h *handler) postReaction(w http.ResponseWriter, r *http.Request) {
 	postID, err := GetIntForm(r, "postID")
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
 	}
 	form := models.ReactionForm{
 		ID:    postID,
@@ -68,6 +69,7 @@ func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 	postID, err := GetIntForm(r, "postID")
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
 	}
 
 	form := models.CommentForm{
@@ -84,11 +86,13 @@ func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 		data, err := h.NewTemplateData(r)
 		if err != nil {
 			h.app.ServerError(w, err)
+			return
 		}
 		data.Form = form
 		data.Categories, err = h.service.GetAllCategory()
 		if err != nil {
 			h.app.ServerError(w, err)
+			return
 		}
 
 		if err != nil {
@@ -136,11 +140,13 @@ func (h *handler) commentReaction(w http.ResponseWriter, r *http.Request) {
 	postID, err := GetIntForm(r, "postID")
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
 	}
 
 	commentID, err := GetIntForm(r, "commentID")
 	if err != nil {
 		h.app.ServerError(w, err)
+		return
 	}
 
 	token := cookie.GetSessionCookie(r)

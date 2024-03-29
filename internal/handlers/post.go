@@ -42,22 +42,24 @@ func (h *handler) postCreatePost(w http.ResponseWriter, r *http.Request) {
 		Content:          r.FormValue("content"),
 		CategoriesString: r.Form["categories"],
 	}
-
+	categories, err := h.service.GetAllCategory()
+	if err != nil {
+		h.app.ServerError(w, err)
+		return
+	}
 	form.CheckField(validator.NotBlank(form.Title), "title", "This field cannot be blank")
 	form.CheckField(validator.NotBlank(form.Content), "content", "This field cannot be blank")
 	form.CheckField(validator.NotSelected(form.CategoriesString), "categories", "At least one must be selected")
-	form.CheckField(validator.IsError(form.ConverCategories()), "categories", "This field is incoreted")
+	form.CheckField(validator.IsError(form.ConverCategories(categories)), "categories", "This field is not correct")
 
 	if !form.Valid() {
 		data, err := h.NewTemplateData(r)
 		if err != nil {
 			h.app.ServerError(w, err)
+			return
 		}
 		data.Form = form
-		categories, err := h.service.GetAllCategory()
-		if err != nil {
-			h.app.ServerError(w, err)
-		}
+
 		data.Categories = categories
 		h.app.Render(w, http.StatusUnprocessableEntity, "create.html", data)
 		return

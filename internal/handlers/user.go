@@ -46,6 +46,7 @@ func (h *handler) loginPost(w http.ResponseWriter, r *http.Request) {
 		data, err := h.NewTemplateData(r)
 		if err != nil {
 			h.app.ServerError(w, err)
+			return
 		}
 		data.Form = form
 		h.app.Render(w, http.StatusUnprocessableEntity, "signup.html", data)
@@ -58,6 +59,7 @@ func (h *handler) loginPost(w http.ResponseWriter, r *http.Request) {
 			data, err := h.NewTemplateData(r)
 			if err != nil {
 				h.app.ServerError(w, err)
+				return
 			}
 			data.Form = form
 			h.app.Render(w, http.StatusUnprocessableEntity, "login.html", data)
@@ -66,6 +68,7 @@ func (h *handler) loginPost(w http.ResponseWriter, r *http.Request) {
 			data, err := h.NewTemplateData(r)
 			if err != nil {
 				h.app.ServerError(w, err)
+				return
 			}
 			data.Form = form
 			h.app.Render(w, http.StatusUnprocessableEntity, "login.html", data)
@@ -119,6 +122,7 @@ func (h *handler) signupPost(w http.ResponseWriter, r *http.Request) {
 		data, err := h.NewTemplateData(r)
 		if err != nil {
 			h.app.ServerError(w, err)
+			return
 		}
 		data.Form = form
 		h.app.Render(w, http.StatusUnprocessableEntity, "signup.html", data)
@@ -133,6 +137,7 @@ func (h *handler) signupPost(w http.ResponseWriter, r *http.Request) {
 			data, err := h.NewTemplateData(r)
 			if err != nil {
 				h.app.ServerError(w, err)
+				return
 			}
 			data.Form = form
 			h.app.Render(w, http.StatusUnprocessableEntity, "signup.html", data)
@@ -141,6 +146,7 @@ func (h *handler) signupPost(w http.ResponseWriter, r *http.Request) {
 			data, err := h.NewTemplateData(r)
 			if err != nil {
 				h.app.ServerError(w, err)
+				return
 			}
 			data.Form = form
 			h.app.Render(w, http.StatusUnprocessableEntity, "signup.html", data)

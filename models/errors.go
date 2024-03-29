@@ -10,4 +10,6 @@ var (
 	ErrDuplicateEmail = errors.New("models: duplicate email")
 
 	ErrDuplicateName = errors.New("models: duplicate name")
+
+	UnknownCategory = errors.New("models: category doesnt exist")
 )

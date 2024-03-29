@@ -56,11 +56,14 @@ type PostForm struct {
 	validator.Validator `form:"-"`
 }
 
-func (f *PostForm) ConverCategories() error {
+func (f *PostForm) ConverCategories(categories []string) error {
 	for _, str := range f.CategoriesString {
 		nb, err := strconv.Atoi(str)
 		if err != nil {
 			return err
+		}
+		if nb > len(categories) || nb < 0 {
+			return UnknownCategory
 		}
 		f.Categories = append(f.Categories, nb)
 	}

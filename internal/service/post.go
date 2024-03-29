@@ -9,7 +9,7 @@ func (s *service) CreatePost(title, content, token string, categories []int) (in
 	if err != nil {
 		return 0, err
 	}
-
+	trim(&title, &token)
 	postID, err := s.repo.CreatePost(userID, title, content, "Nan")
 	if err != nil {
 		return 0, err
