@@ -47,6 +47,8 @@ func (h *handler) postCreatePost(w http.ResponseWriter, r *http.Request) {
 		h.app.ServerError(w, err)
 		return
 	}
+
+	trim(&form.Title, &form.Content)
 	form.CheckField(validator.NotBlank(form.Title), "title", "This field cannot be blank")
 	form.CheckField(validator.NotBlank(form.Content), "content", "This field cannot be blank")
 	form.CheckField(validator.NotSelected(form.CategoriesString), "categories", "At least one must be selected")
@@ -64,8 +66,8 @@ func (h *handler) postCreatePost(w http.ResponseWriter, r *http.Request) {
 		h.app.Render(w, http.StatusUnprocessableEntity, "create.html", data)
 		return
 	}
-	cookie_ := cookie.GetSessionCookie(r)
-	postID, err := h.service.CreatePost(form.Title, form.Content, cookie_.Value, form.Categories)
+	cookies := cookie.GetSessionCookie(r)
+	postID, err := h.service.CreatePost(form.Title, form.Content, cookies.Value, form.Categories)
 	if err != nil {
 		h.app.ServerError(w, err)
 		return

@@ -5,6 +5,7 @@ import (
 	"forum/pkg/cookie"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type contextKey string
@@ -130,4 +131,10 @@ func ConverCategories(CategoriesString []string) ([]int, error) {
 	}
 
 	return categories, nil
+}
+
+func trim(s ...*string) {
+	for _, value := range s {
+		*value = strings.TrimSpace(*value)
+	}
 }

@@ -74,8 +74,3 @@ func validateLimit(limitStr string) int {
 	return limit
 }
 
-func trim(s ...*string) {
-	for _, value := range s {
-		strings.TrimSpace(*value)
-	}
-}

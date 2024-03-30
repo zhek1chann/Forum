@@ -5,15 +5,13 @@ import (
 	"forum/models"
 )
 
-func (s *Sqlite) CheckcCommentExists(commentID int) bool {
+func (s *Sqlite) CheckCommentExists(commentID int) bool {
 	var isExists bool
 	checkQuery := `SELECT EXISTS(SELECT id FROM comments WHERE id = ?)`
 	err := s.db.QueryRow(checkQuery, commentID).Scan(&isExists)
 	if err != nil {
-		fmt.Println(1)
 		return false
 	}
-	fmt.Println(isExists)
 	return isExists
 }
 

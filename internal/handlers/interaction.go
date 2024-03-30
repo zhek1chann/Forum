@@ -83,7 +83,7 @@ func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 		PostID:  postID,
 		Token:   token.Value,
 	}
-
+	trim(&form.Content)
 	form.CheckField(validator.NotBlank(form.Content), "comment", "This field cannot be blank")
 	form.CheckField(validator.MinChars(form.Content, 2), "comment", "This field must be at least 2 characters long")
 	form.CheckField(validator.MaxChars(form.Content, 50), "comment", "This field must be maximum 50 characters")
@@ -180,6 +180,5 @@ func (h *handler) commentReaction(w http.ResponseWriter, r *http.Request) {
 		h.app.ServerError(w, err)
 		return
 	}
-	fmt.Println(3)
 	http.Redirect(w, r, fmt.Sprintf("/post/%d", postID), http.StatusSeeOther)
 }

@@ -59,7 +59,7 @@ type CommentRepo interface {
 	CheckReactionComment(form models.ReactionForm) (bool, bool, error)
 	AddReactionComment(form models.ReactionForm) error
 	DeleteReactionComment(form models.ReactionForm, isLike bool) error
-	CheckcCommentExists(commentID int) bool
+	CheckCommentExists(commentID int) bool
 }
 
 type RepoI interface {

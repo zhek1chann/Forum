@@ -10,7 +10,6 @@ func (s *service) CommentPost(form models.CommentForm) error {
 	if err != nil {
 		return err
 	}
-	trim(&form.Content)
 	return s.repo.CommentPost(form)
 }
 
@@ -52,7 +51,7 @@ func (s *service) CommentReaction(form models.ReactionForm) error {
 	if err != nil {
 		return err
 	}
-	ok := s.repo.CheckPostExists(form.ID)
+	ok := s.repo.CheckCommentExists(form.ID)
 
 	if !ok {
 		return models.ErrNoRecord
