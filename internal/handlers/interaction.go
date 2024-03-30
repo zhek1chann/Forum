@@ -86,7 +86,7 @@ func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 	trim(&form.Content)
 	form.CheckField(validator.NotBlank(form.Content), "comment", "This field cannot be blank")
 	form.CheckField(validator.MinChars(form.Content, 2), "comment", "This field must be at least 2 characters long")
-	form.CheckField(validator.MaxChars(form.Content, 50), "comment", "This field must be maximum 50 characters")
+	form.CheckField(validator.MaxChars(form.Content, 100), "comment", "This field must be maximum 100 characters")
 
 	if !form.Valid() {
 		data, err := h.NewTemplateData(r)
