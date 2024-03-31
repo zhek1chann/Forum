@@ -23,6 +23,7 @@
       <div class="desc"><pre class="postText_short">{{.Content}}</pre></div>
     </div>
     <div class="card-footer">
+        <div>
       <div class="category-tags-wrapper">
         {{range $category := .Categories}}
         <a href="/?category={{toLower $category}}" class="category-footer"
@@ -30,6 +31,14 @@
         >
         {{end}}
       </div>
+      {{if gt .CommentCount 0}}
+      <div class="replies-container">
+        <img src="/static/img/replies.png" alt="replies-image" class="reactionImg">
+        <p>{{.CommentCount}}</p>
+      </div>
+      {{end}}
+    </div>
+
       <form action="/post/reaction" method="POST">
         <input type="hidden" name="postID" value="{{.PostID}}" />
         <input type="hidden" name="url" value="/" />

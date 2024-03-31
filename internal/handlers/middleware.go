@@ -65,6 +65,8 @@ func (h *handler) checkCookie(next http.HandlerFunc) http.HandlerFunc {
 				return
 			}
 
+			//TODO validate expire time of cookie
+
 			if !isValid {
 				cookie.ExpireSessionCookie(w)
 				http.Redirect(w, r, r.URL.Path, http.StatusSeeOther)

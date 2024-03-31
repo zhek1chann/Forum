@@ -3,8 +3,8 @@
   <div class="metadata">
     <strong class="postTitle">{{.Post.Title}}</strong>
     <div class="namedate">
-      <pre class="post-card-Username">By {{.Post.UserName}} on </pre>
-      <span class="post-card-Date"
+      <pre class="post-card-Username-post">By {{.Post.UserName}} on </pre>
+      <span class="post-card-Date-post"
         ><time datetime=""></time>{{humanDate .Post.Created }}</span
       >
     </div>
@@ -80,7 +80,7 @@
   <div class="comment">
     <div class="comment-left">
       <div class="comment-metadata">
-        <pre class="post-card-Username">By {{.UserName}} on </pre>
+        <pre class="comment-Username">By {{.UserName}} on </pre>
         <span>{{humanDate .Created}}</span>
       </div>
       <div class="comment-body">
