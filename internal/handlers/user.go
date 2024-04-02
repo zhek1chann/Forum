@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"forum/models"
 	"forum/pkg/cookie"
 	"forum/pkg/validator"
@@ -78,6 +79,8 @@ func (h *handler) loginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	cookie.SetSessionCookie(w, session.Token, session.ExpTime)
+	c := cookie.GetSessionCookie(r)
+	fmt.Println(c.Expires)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 

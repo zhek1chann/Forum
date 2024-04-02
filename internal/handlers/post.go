@@ -77,6 +77,10 @@ func (h *handler) postCreatePost(w http.ResponseWriter, r *http.Request) {
 
 func (h *handler) postView(w http.ResponseWriter, r *http.Request) {
 	id, _ := strings.CutPrefix(r.URL.Path, "/post/")
+	if strings.Contains(id, "/") {
+		h.app.ClientError(w, 404)
+		return
+	}
 	ID, err := strconv.Atoi(id)
 	if err != nil || ID < 1 || id[0] == '0' {
 		h.app.ClientError(w, 400)

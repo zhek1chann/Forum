@@ -44,7 +44,8 @@ func (s *Sqlite) IsValidToken(token string) (bool, error) {
 		return false, fmt.Errorf("%s: %w", op, err)
 	}
 
-	if !expTime.After(time.Now()) {
+
+	if expTime.Before(time.Now()) {
 		return false, nil
 	}
 	return true, nil

@@ -36,7 +36,6 @@ func (h *handler) requireAuthentication(next http.HandlerFunc) http.HandlerFunc 
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
-
 		isValid, err := h.service.ValidToken(c.Value)
 		if err != nil {
 			h.app.ServerError(w, err)
@@ -58,13 +57,13 @@ func (h *handler) requireAuthentication(next http.HandlerFunc) http.HandlerFunc 
 func (h *handler) checkCookie(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		c := cookie.GetSessionCookie(r)
+
 		if c != nil {
 			isValid, err := h.service.ValidToken(c.Value)
 			if err != nil {
 				h.app.ServerError(w, err)
 				return
 			}
-
 			//TODO validate expire time of cookie
 
 			if !isValid {
@@ -72,7 +71,6 @@ func (h *handler) checkCookie(next http.HandlerFunc) http.HandlerFunc {
 				http.Redirect(w, r, r.URL.Path, http.StatusSeeOther)
 				return
 			}
-
 		}
 
 		w.Header().Add("Cache-Control", "no-store")
