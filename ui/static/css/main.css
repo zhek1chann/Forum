@@ -663,6 +663,10 @@ footer {
     padding-top: 15px;
 }
 
+.titleHome{
+    font-size: larger;
+}
+
 @media screen and (max-width: 2500px) {
   .left {
     left: 10%;
