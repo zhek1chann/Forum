@@ -6,6 +6,7 @@ import (
 	"forum/pkg/cookie"
 	"forum/pkg/validator"
 	"net/http"
+	"strings"
 )
 
 func (h *handler) login(w http.ResponseWriter, r *http.Request) {
@@ -107,7 +108,7 @@ func (h *handler) signupGet(w http.ResponseWriter, r *http.Request) {
 func (h *handler) signupPost(w http.ResponseWriter, r *http.Request) {
 	form := models.UserSignupForm{
 		Name:     r.FormValue("name"),
-		Email:    r.FormValue("email"),
+		Email:    strings.ToLower(r.FormValue("email")),
 		Password: r.FormValue("password"),
 	}
 
@@ -125,6 +126,11 @@ func (h *handler) signupPost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		data.Form = form
+		data.Categories, err = h.service.GetAllCategory()
+		if err != nil {
+			h.app.ServerError(w, err)
+			return
+		}
 		h.app.Render(w, http.StatusUnprocessableEntity, "signup.html", data)
 		return
 	}

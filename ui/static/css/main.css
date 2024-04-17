@@ -693,6 +693,11 @@ font-size: 30px !important;
   display: flex;
   flex-direction: column;
 }
+
+.replyLink{
+  color: var(--sunglow) !important;
+}
+
 @media screen and (max-width: 2500px) {
   .left {
     left: 10%;

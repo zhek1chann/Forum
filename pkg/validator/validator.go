@@ -50,9 +50,6 @@ func IsEmail(value string) bool {
 	return emailRegex.MatchString(value)
 }
 
-// func PermittedValue[T comparable](value T, permittedValues ...T) bool {
-// 	return slices.Contains(permittedValues, value)
-// }
 
 func IsError(err error) bool {
 	return err == nil

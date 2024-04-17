@@ -64,7 +64,7 @@ func (h *handler) checkCookie(next http.HandlerFunc) http.HandlerFunc {
 				h.app.ServerError(w, err)
 				return
 			}
-			//TODO validate expire time of cookie
+			// TODO validate expire time of cookie
 
 			if !isValid {
 				cookie.ExpireSessionCookie(w)
