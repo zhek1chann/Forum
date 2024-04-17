@@ -34,7 +34,7 @@ func (h *handler) loginGet(w http.ResponseWriter, r *http.Request) {
 
 func (h *handler) loginPost(w http.ResponseWriter, r *http.Request) {
 	form := models.UserLoginForm{
-		Email:    r.FormValue("email"),
+		Email:    strings.ToLower(r.FormValue("email")),
 		Password: r.FormValue("password"),
 	}
 
@@ -50,6 +50,11 @@ func (h *handler) loginPost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		data.Form = form
+		data.Categories, err = h.service.GetAllCategory()
+		if err != nil {
+			h.app.ServerError(w, err)
+			return
+		}
 		h.app.Render(w, http.StatusUnprocessableEntity, "login.html", data)
 		return
 	}
@@ -63,6 +68,11 @@ func (h *handler) loginPost(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			data.Form = form
+			data.Categories, err = h.service.GetAllCategory()
+			if err != nil {
+				h.app.ServerError(w, err)
+				return
+			}
 			h.app.Render(w, http.StatusUnprocessableEntity, "login.html", data)
 		} else if errors.Is(err, models.ErrInvalidCredentials) {
 			form.AddFieldError("password", models.ErrInvalidCredentials.Error())
@@ -72,6 +82,11 @@ func (h *handler) loginPost(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			data.Form = form
+			data.Categories, err = h.service.GetAllCategory()
+			if err != nil {
+				h.app.ServerError(w, err)
+				return
+			}
 			h.app.Render(w, http.StatusUnprocessableEntity, "login.html", data)
 		} else {
 			h.app.ServerError(w, err)
