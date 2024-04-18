@@ -25,7 +25,7 @@ func (h *handler) Routes() http.Handler {
 	mux.HandleFunc("/comment/post", h.requireAuthentication(h.commentPost))
 	mux.HandleFunc("/comment/reaction", h.requireAuthentication(h.commentReaction))
 
-	return mux
+	return h.secureHeaders(mux)
 }
 
 type neuteredFileSystem struct {

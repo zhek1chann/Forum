@@ -16,7 +16,7 @@ func (h *handler) postReaction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if r.Method != http.MethodPost {
-		h.app.ClientError(w, http.StatusBadRequest)
+		h.app.ClientError(w, http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -28,7 +28,7 @@ func (h *handler) postReaction(w http.ResponseWriter, r *http.Request) {
 	token := cookie.GetSessionCookie(r)
 	postID, err := GetIntForm(r, "postID")
 	if err != nil {
-		h.app.ServerError(w, err)
+		h.app.ClientError(w, http.StatusBadRequest)
 		return
 	}
 	form := models.ReactionForm{
@@ -67,7 +67,7 @@ func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if r.Method != http.MethodPost {
-		h.app.ClientError(w, http.StatusBadRequest)
+		h.app.ClientError(w, http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -108,7 +108,7 @@ func (h *handler) commentPost(w http.ResponseWriter, r *http.Request) {
 		post, err := h.service.GetPostByID(form.PostID)
 		if err != nil {
 			if errors.Is(err, models.ErrNoRecord) {
-				h.app.ClientError(w, 404)
+				h.app.ClientError(w, http.StatusNotFound)
 				return
 			} else {
 				h.app.ServerError(w, err)
@@ -134,7 +134,7 @@ func (h *handler) commentReaction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if r.Method != http.MethodPost {
-		h.app.ClientError(w, http.StatusBadRequest)
+		h.app.ClientError(w, http.StatusMethodNotAllowed)
 		return
 	}
 

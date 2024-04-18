@@ -90,7 +90,7 @@ func (h *handler) postView(w http.ResponseWriter, r *http.Request) {
 	post, err := h.service.GetPostByID(ID)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
-			h.app.ClientError(w, 404)
+			h.app.ClientError(w, http.StatusNotFound)
 		} else {
 			h.app.ServerError(w, err)
 		}

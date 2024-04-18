@@ -328,7 +328,7 @@ footer {
 }
 
 .post-card {
-  max-height: 300px;
+  max-height: 320px;
   box-shadow: rgba(0.24, 0.24, 0.24, 0.24) 5px 5px 5px;
   padding: 30px;
   border-width: 1px;
@@ -648,10 +648,11 @@ footer {
 
 .postText{
   white-space:pre-line;
+  overflow-wrap: break-word;
 }
 
 .postText_short {
-  max-height: 5rem;
+  max-height: 6rem;
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--redwood);

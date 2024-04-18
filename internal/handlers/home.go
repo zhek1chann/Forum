@@ -66,7 +66,5 @@ func (h *handler) home(w http.ResponseWriter, r *http.Request) {
 	h.app.Render(w, http.StatusOK, "home.html", data)
 	return
 }
+
 // SELECT count(*) FROM comments INNER JOIN posts ON comments.post_id=posts.id  GROUP by comments.post_id;
-
-
-

@@ -17,10 +17,11 @@ func GetSessionCookie(r *http.Request) *http.Cookie {
 
 func SetSessionCookie(w http.ResponseWriter, token string, expirationTime time.Time) {
 	cookie := http.Cookie{
-		Name:    cookieName,
-		Value:   token,
-		Path:    "/",
-		Expires: expirationTime,
+		Name:     cookieName,
+		Value:    token,
+		Path:     "/",
+		Expires:  expirationTime,
+		HttpOnly: true,
 	}
 	http.SetCookie(w, &cookie)
 }

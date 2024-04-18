@@ -40,8 +40,6 @@ func (s *service) GetPostByID(id int) (*models.Post, error) {
 		post.Comment = comment
 	}
 
-	// exists, isLike, err:=s.repo.CheckReactionPost(models.PostReactionForm{PostID: strconv.Itoa(id),UserID: })
-	// return post, nil
 	return post, nil
 }
 
