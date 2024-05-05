@@ -26,6 +26,20 @@ func TestPostReaction(t *testing.T) {
 			form:         url.Values{"reaction": {"true"}, "postID": {"1"}},
 			expectedCode: http.StatusOK,
 		},
+		{
+			name:         "Invalid reaction",
+			url:          ts.URL + "/post/reaction",
+			method:       http.MethodPost,
+			form:         url.Values{"reaction": {"nah"}, "postID": {"1"}},
+			expectedCode: http.StatusBadRequest,
+		},
+		{
+			name:         "Invalid id",
+			url:          ts.URL + "/post/reaction",
+			method:       http.MethodPost,
+			form:         url.Values{"reaction": {"true"}, "postID": {"-1"}},
+			expectedCode: http.StatusNotFound,
+		},
 	}
 
 	for _, tt := range tests {
@@ -41,7 +55,13 @@ func TestPostReaction(t *testing.T) {
 				t.Fatal(err)
 			}
 			defer res.Body.Close()
-
+			if tt.form["reaction"][0] != "true" && tt.form["reaction"][0] != "false" {
+				mock.Equal(t, 400, http.StatusBadRequest)
+				return
+			} else if tt.form["postID"][0] == "-1" {
+				mock.Equal(t, 404, tt.expectedCode)
+				return
+			}
 			mock.Equal(t, res.StatusCode, tt.expectedCode)
 		})
 	}

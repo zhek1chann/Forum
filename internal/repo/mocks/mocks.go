@@ -190,6 +190,9 @@ func (r *MockRepo) GetCategoriesByPostID(id int) (map[int]string, error) {
 }
 
 func (r *MockRepo) GetReactionPost(userID, postID int) (bool, bool, error) {
+	if postID > 1 && postID < 1 {
+		return false, false, models.ErrNoRecord
+	}
 	return true, true, nil
 }
 
