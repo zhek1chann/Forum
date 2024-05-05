@@ -32,10 +32,11 @@
         {{end}}
       </div>
       {{if gt .CommentCount 0}}
-      <div class="replies-container">
+      <a href="/post/{{.PostID}}" class="replyLink"> <div class="replies-container">
         <img src="/static/img/replies.png" alt="replies-image" class="reactionImg">
         <p>{{.CommentCount}}</p>
       </div>
+    </a>
       {{end}}
     </div>
 

@@ -68,9 +68,8 @@ func validateLimit(limitStr string) int {
 	if err != nil {
 		limit = pageSize
 	}
-	if limit < 0 {
+	if limit <= 0 {
 		limit = pageSize
 	}
 	return limit
 }
-

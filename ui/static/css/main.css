@@ -328,7 +328,7 @@ footer {
 }
 
 .post-card {
-  max-height: 300px;
+  max-height: 320px;
   box-shadow: rgba(0.24, 0.24, 0.24, 0.24) 5px 5px 5px;
   padding: 30px;
   border-width: 1px;
@@ -648,10 +648,11 @@ footer {
 
 .postText{
   white-space:pre-line;
+  overflow-wrap: break-word;
 }
 
 .postText_short {
-  max-height: 5rem;
+  max-height: 6rem;
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--redwood);
@@ -665,6 +666,37 @@ footer {
 
 .titleHome{
     font-size: larger;
+}
+
+.errorCode{
+  font-size: 60px;
+margin-top: 10vh;
+color: var(--cyclamen);
+}
+
+.errorText{
+font-size: 40px;
+margin-bottom: 50px;
+}
+
+.errors{
+text-align: center;
+font-size: 30px !important;
+
+}
+
+.errorImg{
+  align-self: center;
+  max-width: 500px;
+}
+
+.errorBody{
+  display: flex;
+  flex-direction: column;
+}
+
+.replyLink{
+  color: var(--sunglow) !important;
 }
 
 @media screen and (max-width: 2500px) {
