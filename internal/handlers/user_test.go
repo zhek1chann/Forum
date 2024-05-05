@@ -153,7 +153,7 @@ func TestUserLoginPost(t *testing.T) {
 
 	const (
 		validEmail    = "max@gmail.com"
-		validPassword = "max@gmail.com"
+		validPassword = "maxmax01"
 	)
 
 	tests := []struct {
