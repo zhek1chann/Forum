@@ -16,4 +16,5 @@ type TemplateData struct {
 	Category_id     int
 	URL             string
 	LimitVariation  []int
+	Quote           string
 }
