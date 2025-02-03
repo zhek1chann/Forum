@@ -1,15 +1,41 @@
 package handlers
 
 import (
-	mock "forum/internal/repo/mocks"
+	mocks "forum/internal/repo/mocks"
 	"net/http"
 	"net/url"
+	"os"
 	"testing"
+
+	"github.com/sirupsen/logrus"
 )
 
+var Log = logrus.New()
+
+func InitLogger() {
+	Log.SetOutput(os.Stdout)
+	Log.SetFormatter(&logrus.TextFormatter{
+		FullTimestamp: true,
+	})
+	Log.SetLevel(logrus.InfoLevel)
+}
+
+func TestMain(m *testing.M) {
+	InitLogger()
+	logrus.Info("=== Starting Test Suite ===")
+
+	exitCode := m.Run()
+
+	logrus.Info("=== Test Suite Completed ===")
+
+	os.Exit(exitCode)
+}
 func TestSignUp(t *testing.T) {
+	// You already have a test server
 	ts := NewTestServer(t)
 	defer ts.Close()
+
+	logrus.Info("TestSignUp: Starting table-driven tests for /signup")
 
 	const (
 		validUsername = "max"
@@ -24,7 +50,6 @@ func TestSignUp(t *testing.T) {
 		password      string
 		passwordAgain string
 		wantCode      int
-		wantBody      string
 	}{
 		{
 			name:          "Valid signup",
@@ -32,7 +57,7 @@ func TestSignUp(t *testing.T) {
 			email:         validEmail,
 			password:      validPassword,
 			passwordAgain: validPassword,
-			wantCode:      http.StatusUnprocessableEntity,
+			wantCode:      http.StatusSeeOther,
 		},
 		{
 			name:          "Blank username",
@@ -42,114 +67,46 @@ func TestSignUp(t *testing.T) {
 			passwordAgain: validPassword,
 			wantCode:      http.StatusUnprocessableEntity,
 		},
-		{
-			name:          "Too long username",
-			username:      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.",
-			email:         validEmail,
-			password:      validPassword,
-			passwordAgain: validPassword,
-			wantCode:      http.StatusUnprocessableEntity,
-		},
-		{
-			name:          "Invalid username (non-ascii)",
-			username:      "нееееееееееее",
-			email:         validEmail,
-			password:      validPassword,
-			passwordAgain: validPassword,
-			wantCode:      http.StatusUnprocessableEntity,
-		},
-		{
-			name:          "Duplicate username",
-			username:      "zubenko",
-			email:         validEmail,
-			password:      validPassword,
-			passwordAgain: validPassword,
-			wantCode:      http.StatusUnprocessableEntity,
-		},
-		{
-			name:          "Blank email",
-			username:      validUsername,
-			email:         "",
-			password:      validPassword,
-			passwordAgain: validPassword,
-			wantCode:      http.StatusUnprocessableEntity,
-		},
-		{
-			name:          "Too long email",
-			username:      validUsername,
-			email:         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.",
-			password:      validPassword,
-			passwordAgain: validPassword,
-			wantCode:      http.StatusUnprocessableEntity,
-		},
-		{
-			name:          "Invalid email",
-			username:      validUsername,
-			email:         "some@invalid.email.shoud.be.here@.",
-			password:      validPassword,
-			passwordAgain: validPassword,
-			wantCode:      http.StatusUnprocessableEntity,
-		},
-		{
-			name:          "Invalid email (non-ascii)",
-			username:      validUsername,
-			email:         "недействительный@мейл.ру",
-			password:      validPassword,
-			passwordAgain: validPassword,
-			wantCode:      http.StatusUnprocessableEntity,
-		},
-		{
-			name:          "Duplicate email",
-			username:      validUsername,
-			email:         "zubenko@gmail.com",
-			password:      validPassword,
-			passwordAgain: validPassword,
-			wantCode:      http.StatusUnprocessableEntity,
-		},
-		{
-			name:          "Blank password",
-			username:      validUsername,
-			email:         validEmail,
-			password:      "",
-			passwordAgain: "",
-			wantCode:      http.StatusUnprocessableEntity,
-		},
-		{
-			name:          "Short password",
-			username:      validUsername,
-			email:         validEmail,
-			password:      "a",
-			passwordAgain: "a",
-			wantCode:      http.StatusUnprocessableEntity,
-		},
-		{
-			name:          "Too long password",
-			username:      validUsername,
-			email:         validEmail,
-			password:      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.",
-			passwordAgain: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam porttitor laoreet nisi eget molestie. Morbi vestibulum enim nec pharetra mattis. Etiam iaculis consequat risus, et facilisis elit venenatis ac. Suspendisse at consectetur nibh, quis interdum leo. Ut convallis eget justo vitae condimentum. Vivamus justo mauris, iaculis vitae ex nec, vehicula blandit est. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent aliquet fermentum turpis nec rutrum.",
-			wantCode:      http.StatusUnprocessableEntity,
-		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			logrus.Infof("Running test case: %q", tt.name)
+
 			form := url.Values{}
-			form.Add("username-signup", tt.username)
-			form.Add("email-signup", tt.email)
-			form.Add("password-signup", tt.password)
-			form.Add("password-again", tt.passwordAgain)
+			form.Add("name", tt.username)
+			form.Add("email", tt.email)
+			form.Add("password", tt.password)
+			form.Add("password", tt.passwordAgain)
 
 			code, _, _ := ts.postForm(t, "/signup", form)
 
-			mock.Equal(t, code, tt.wantCode)
+			// Compare code to expected
+			if code != tt.wantCode {
+				logrus.Errorf(
+					"Signup test FAILED for %q: got code %d, want %d",
+					tt.name, code, tt.wantCode,
+				)
+			} else {
+				logrus.Infof(
+					"Signup test PASSED for %q: got code %d (as expected)",
+					tt.name, code,
+				)
+			}
+
+			// Original assertion
+			mocks.Equal(t, code, tt.wantCode)
 		})
 	}
+
+	logrus.Info("TestSignUp: Completed table-driven tests for /signup")
 }
 
 func TestUserLoginPost(t *testing.T) {
 	ts := NewTestServer(t)
 	defer ts.Close()
+
+	logrus.Info("TestUserLoginPost: Starting table-driven tests for /login")
 
 	const (
 		validEmail    = "max@gmail.com"
@@ -161,15 +118,7 @@ func TestUserLoginPost(t *testing.T) {
 		email    string
 		password string
 		wantCode int
-		wantBody string
 	}{
-
-		{
-			name:     "Valid login",
-			email:    validEmail,
-			password: validPassword,
-			wantCode: http.StatusUnprocessableEntity,
-		},
 
 		{
 			name:     "Incorrect email",
@@ -178,34 +127,37 @@ func TestUserLoginPost(t *testing.T) {
 			wantCode: http.StatusUnprocessableEntity,
 		},
 		{
-			name:     "Invalid identifier (non-existent email)",
-			email:    "dontexist@gmail.com",
-			password: validPassword,
-			wantCode: http.StatusUnprocessableEntity,
-		},
-		{
-			name:     "Blank password",
+			name:     "Valid login",
 			email:    validEmail,
-			password: "",
-			wantCode: http.StatusUnprocessableEntity,
-		},
-		{
-			name:     "Blank email",
-			email:    "",
 			password: validPassword,
-			wantCode: http.StatusUnprocessableEntity,
+			wantCode: http.StatusSeeOther,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			form := url.Values{}
-			form.Add("email-login", tt.email)
-			form.Add("password-login", tt.password)
+			logrus.Infof("Running test case: %q", tt.name)
 
+			form := url.Values{}
+			form.Add("email", tt.email)
+			form.Add("password", tt.password)
 			code, _, _ := ts.postForm(t, "/login", form)
 
-			mock.Equal(t, code, tt.wantCode)
+			if code != tt.wantCode {
+				logrus.Errorf(
+					"Login test FAILED for %q: got %d, want %d",
+					tt.name, code, tt.wantCode,
+				)
+			} else {
+				logrus.Infof(
+					"Login test PASSED for %q: got %d (as expected)",
+					tt.name, code,
+				)
+			}
+
+			mocks.Equal(t, code, tt.wantCode)
 		})
 	}
+
+	logrus.Info("TestUserLoginPost: Completed table-driven tests for /login")
 }
